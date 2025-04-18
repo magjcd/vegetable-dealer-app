@@ -1,0 +1,13 @@
+DirectoryIndex magTech.php
+RewriteEngine On
+
+RewriteRule %{REQUEST_FILENAME} !-d
+RewriteRule %{REQUEST_FILENAME}\.php -f
+
+RewriteRule ^index?$ index.php
+RewriteRule ^login?$ login.php
+RewriteRule ^logout?$ logout.php
+
+RewriteRule ^index/([0-9a-zA-Z]+) index.php/page=$1
+
+Options -Indexes

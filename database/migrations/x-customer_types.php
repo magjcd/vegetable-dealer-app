@@ -1,0 +1,8 @@
+<?php
+
+"CREATE TABLE customer_types (
+    id int NOT NULL AUTO_INCREMENT,
+    type VARCHAR(100),
+    
+    PRIMARY KEY (id)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_general_ci;";

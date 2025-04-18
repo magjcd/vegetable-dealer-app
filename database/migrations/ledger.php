@@ -1,0 +1,43 @@
+<?php
+
+namespace database\migrations;
+
+ini_set('display_error', 1);
+include_once(realpath(__DIR__) . '/../../config/database.php');
+
+use config\database;
+
+class cities extends database
+{
+    public function __construct()
+    {
+        echo $this->conn->query("DROP TABLE IF EXISTS `ledger`;");
+        echo $this->conn->query("CREATE TABLE `ledger` ( 
+                            id int NOT NULL AUTO_INCREMENT,
+                            gj_date DATE NOT NULL,
+                            inv_no int,
+
+                            details TEXT,
+                            customer_acc_id int NOT NULL,
+                            customer_header_id int NOT NULL,
+                            customer_sub_header_id int NOT NULL,
+                            dr int,
+                            cr int,
+                            doc_type ENUM('sell','sell_ret','purchase','purchase_ret','gj'),
+                            reg_by int,
+                        
+                            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            
+                            PRIMARY KEY (id),
+
+                            -- CONSTRAINT fk_inv_no_ledger FOREIGN KEY (inv_no) REFERENCES sell_inv_no(id) ON DELETE CASCADE, 
+                            CONSTRAINT fk_customer_acc_id_ledger FOREIGN KEY (customer_acc_id) REFERENCES accounts(id) ON DELETE CASCADE ON UPDATE CASCADE, 
+                            CONSTRAINT fk_customer_header_id_ledger FOREIGN KEY (customer_header_id) REFERENCES headers(id) ON DELETE CASCADE ON UPDATE CASCADE, 
+                            CONSTRAINT fk_customer_sub_header_id_ledger FOREIGN KEY (customer_sub_header_id) REFERENCES sub_headers(id) ON DELETE CASCADE ON UPDATE CASCADE,
+                            CONSTRAINT fk_reg_by_ledger FOREIGN KEY (reg_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+
+                        ) ENGINE=INNODB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_general_ci;");
+    }
+}
+new cities;
