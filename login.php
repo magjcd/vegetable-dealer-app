@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Bootstrap Example</title>
+    <title>Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -76,7 +76,7 @@
         <form id="login_form">
 
             <div class="mb-3 mt-3">
-                <p class="text-danger"></p>
+                <p class="text-danger un-success"></p>
             </div>
             <div class="mb-3 mt-3">
                 <label for="email">Email:</label>
@@ -124,14 +124,13 @@
                     if (response.success == false) {
                         $('#error_email').InnerHTML = '';
                         $('#error_password').InnerHTML = '';
-                        // alert(JSON.stringify(response.response))
-
-                        if (response.response.invalid_credentials) {
-                            $('.text-danger').html(response.response.invalid_credentials)
-                            return;
+                        // console.log(response.invalid_credentials)
+                        // return;
+                        if (response.invalid_credentials) {
+                            $('.un-success').html(response.invalid_credentials)
                             $('.btn-primary').html('Login');
+                            return;
                         } else if (response.errors) {
-
                             response.errors.email ? $('#error_email').html(response.errors.email) : '';
                             response.errors.password ? $('#error_password').html(response.errors.password) : '';
                             $('.btn-primary').html('Login');

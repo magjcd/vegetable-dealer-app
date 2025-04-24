@@ -42,32 +42,25 @@ class AuthController extends Model
                 die();
             }
 
-            $payload = 'email = "' . $data['email'] . '" AND  password = "' . $data['password'] . '"';
-
+            $payload = 'email = "' . $data['email'] . '" AND  password = "' . hash('sha256', $data['password']) . '" AND active = "1"';
             $this->query = $this->model->fetchSingle('users', $payload);
 
-
             if ($this->query->num_rows >= 1) {
-
                 while ($this->rows = $this->query->fetch_object()) {
                     $this->data = $this->rows;
                 }
-
-                session_start();
-                // echo json_encode($this->data->name);
+                // session_start();
                 $_SESSION[$this->data->role] = $this->data;
-
-                // header('location: index');
                 echo json_encode(['success' => true, 'response' => 'loged in', 'data' => $this->data], 200);
                 die();
-                // return $this->errors['logged_in'] = 'logged in....';
             } else {
                 echo json_encode(['success' => false, 'invalid_credentials' => 'invalid credentials....'], 401);
                 die();
-                // return $this->errors['logged_in'] = 'coud not logged in....';
             }
-        } catch (\Throwable $th) {
-            throw $th->getMessage();
+        } catch (\Exception $e) {
+            $this->model->conn->rollback();
+            echo json_encode(['success' => true, 'message' => $e->getMessage()], 500);
+            die();
         }
     }
 

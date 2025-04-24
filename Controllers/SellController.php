@@ -11,6 +11,23 @@ class SellController extends Model
     public function __construct()
     {
         $this->model = new Model;
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['admin'])) {
+            $this->user_array = $_SESSION['admin'];
+            $this->user_id = $_SESSION['admin']->id;
+            $this->user_account_id = $_SESSION['admin']->account_id;
+        } elseif (isset($_SESSION['munshi'])) {
+            $this->user_array = $_SESSION['munshi'];
+            $this->user_id = $_SESSION['munshi']->id;
+            $this->user_account_id = $_SESSION['munshi']->account_id;
+        } elseif (isset($_SESSION['owner'])) {
+            $this->user_array = $_SESSION['owner'];
+            $this->user_id = $_SESSION['owner']->id;
+            $this->user_account_id = $_SESSION['owner']->account_id;
+        }
     }
 
     public function sellInvNo()
@@ -60,19 +77,19 @@ class SellController extends Model
             $this->model->conn->begin_transaction();
             $this->query = null;
             if (empty($payload['vendor'])) {
-                $this->errors['vendor'] = 'Vendor is required';
+                $this->errors['vendor'] = 'بیوپاری کا نام';
             }
 
             if (empty($payload['customer'])) {
-                $this->errors['customer'] = 'Customer is required';
+                $this->errors['customer'] = 'گاہک کا نام';
             }
 
             if (empty($payload['qty'])) {
-                $this->errors['qty'] = 'Quantity is required';
+                $this->errors['qty'] = 'تعداد در ج کریں';
             }
 
             if (empty($payload['price'])) {
-                $this->errors['price'] = 'Price is required';
+                $this->errors['price'] = 'قیمت در ج کریں';
             }
 
             if (count($this->errors) > 0) {
@@ -86,6 +103,7 @@ class SellController extends Model
             $vehicle_no = $vendor_info_arr[2];
             $item_id = $vendor_info_arr[3];
             $item_name = $vendor_info_arr[4];
+            $vendor_id = $vendor_info_arr[5];
 
             $customer_info_arr = explode('|', $payload['customer']);
             $customer_acc_id = $customer_info_arr[0];
@@ -99,6 +117,27 @@ class SellController extends Model
             $sales_rev_id = $vendor_info_arr[0];
             $sales_header_id = $vendor_info_arr[1];
             $sales_sub_header_id = $vendor_info_arr[2];
+
+            $pq = null;
+            $sq = null;
+
+            $calc_bal_qty = $this->model->rawCmd('SELECT SUM(pur_qty) as p_qty, SUM(sl_qty) as s_qty FROM `purinvretstk` WHERE item_id = ' . $item_id . ' AND random_no = ' . $random_no);
+
+            $obj = $calc_bal_qty->fetch_assoc();
+            $sq = $obj['s_qty'];
+            $pq = $obj['p_qty'];
+            // print_r($sq['p_qty']);
+            // die();
+
+            // die();
+            if ($payload['qty'] > ($pq - $sq)) {
+                $tot = ($pq - $sq);
+                $this->errors['qty'] =  "کی تعداد موجود ہے۔ $tot ";
+                echo json_encode(['success' => false, 'errors' => $this->errors], 401);
+                die();
+            }
+
+
 
             // Check if invoice items are available but invoice is not saved and DEO try to post item in an other customer within same invoice no. then halt
             $chech_record_avaialble = $this->model->fetchSingle('purinvretstk', 'inv_no = ' . $payload['sell_inv_no'] . ' AND doc_type = "sell"');
@@ -131,7 +170,8 @@ class SellController extends Model
                 'customer_city_id' => $customer_city_id,
                 'sl_qty' => $payload['qty'],
                 'price' => $payload['price'],
-                'doc_type' => 'sell'
+                'doc_type' => 'sell',
+                'reg_by' => $this->user_id
             ];
 
 
@@ -217,20 +257,17 @@ class SellController extends Model
                 $item_array[$belongs_rows->item_name] = $belongs_rows->sl_qty;
             }
 
-            // echo $it_arr = json_encode(array_map('utf8_encode', $item_array));
-            // die();
             // Customer Account
             $gj_customer_payload = [
                 'gj_date' => $payload['trans_date'],
                 'inv_no' => $payload['sell_inv_no'],
                 'details' =>  'items',
                 'customer_acc_id' => $customer_acc_id,
-                // 'header_id' => $header_id,
                 'customer_header_id' => $sub_header_id,
                 'customer_sub_header_id' => $customer_city_id,
                 'dr' => $inv_total_amt,
                 'doc_type' => 'sell',
-                'reg_by' => 1
+                'reg_by' => $this->user_id
             ];
             $this->model->insert('ledger', $gj_customer_payload);
 
@@ -240,12 +277,11 @@ class SellController extends Model
                 'inv_no' => $payload['sell_inv_no'],
                 'details' =>  $customer_name . ' ' . $customer_city,
                 'customer_acc_id' => $sales_rev_id,
-                // 'header_id' => $header_id,
                 'customer_header_id' => $sales_header_id,
                 'customer_sub_header_id' => $sales_sub_header_id,
                 'cr' => $inv_total_amt,
                 'doc_type' => 'sell',
-                'reg_by' => 1
+                'reg_by' => $this->user_id
             ];
 
             $this->model->insert('ledger', $gj_sales_revenue_payload);
@@ -253,7 +289,7 @@ class SellController extends Model
             $sell_inv_no = [
                 'trans_date' => $payload['trans_date'],
                 'customer_id' => $customer_acc_id,
-                'reg_by' => 1
+                'reg_by' => $this->user_id
             ];
 
             $this->model->insert('sell_inv_no', $sell_inv_no);
@@ -278,6 +314,26 @@ class SellController extends Model
         }
     }
 
+    public function deleteUnsavedSngItem($payload)
+    {
+        try {
+            $item_id = $payload['item_id'];
+
+            $this->query = $this->model->delete('purinvretstk', 'id = ' . $item_id);
+            if (!$this->query) {
+                echo json_encode(['success' => false, 'message' => 'item could not be deleted',], 301);
+                die();
+            }
+
+            echo json_encode(['success' => true, 'message' => 'item deleted'], 200);
+            die();
+        } catch (\Exception $e) {
+            $this->model->conn->rollback();
+            echo json_encode(['success' => true, 'message' => $e->getMessage()], 500);
+            die();
+        }
+    }
+
     // The record that has been added in an invoice or invoice has been saved in sell_inv_no table
     public function listKachiSellInvoiced($date = null)
     {
@@ -286,7 +342,7 @@ class SellController extends Model
             $this->rows = null;
             $this->data = null;
             $dt = (!empty($date) ? $date : date('Y-m-d'));
-            // $dt = date('Y-m-d');
+
             $this->query = $this->model->rawCmd('SELECT * FROM `purinvretstk` INNER JOIN `accounts` ON `purinvretstk`.`customer_acc_id` = `accounts`.`id` INNER JOIN `items` ON `purinvretstk`.`item_id` = `items`.`id` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id` WHERE `purinvretstk`.doc_type = "sell" AND `purinvretstk`.invoiced="1" AND `purinvretstk`.trans_date ="' . $dt . '"');
             if ($this->query->num_rows > 0) {
                 while ($this->rows = $this->query->fetch_object()) {
@@ -308,7 +364,7 @@ class SellController extends Model
             $this->rows = null;
             $this->data = null;
 
-            $this->query = $this->model->rawCmd('SELECT * FROM `purinvretstk` INNER JOIN `accounts` ON `purinvretstk`.`customer_acc_id` = `accounts`.`id` INNER JOIN `items` ON `purinvretstk`.`item_id` = `items`.`id` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id` WHERE `purinvretstk`.doc_type = "sell" AND `purinvretstk`.invoiced="0"');
+            $this->query = $this->model->rawCmd('SELECT `purinvretstk`.`id` as pur_id,`purinvretstk`.`sl_qty` as sl_qty,`purinvretstk`.`price` as price,`items`.`item_name` as item_name,`accounts`.`account_holder_name` as account_holder_name,`cities`.`city_name` as city_name FROM `purinvretstk` INNER JOIN `accounts` ON `purinvretstk`.`customer_acc_id` = `accounts`.`id` INNER JOIN `items` ON `purinvretstk`.`item_id` = `items`.`id` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id` WHERE `purinvretstk`.doc_type = "sell" AND `purinvretstk`.invoiced="0"');
             if ($this->query->num_rows > 0) {
                 while ($this->rows = $this->query->fetch_object()) {
                     $this->data[] = $this->rows;

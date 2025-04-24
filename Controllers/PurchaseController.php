@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-ini_set('display_error', 1);
+// ini_set('display_error', 1);
 
 use Models\Model;
 
@@ -11,6 +11,23 @@ class PurchaseController extends Model
     public function __construct()
     {
         $this->model = new Model;
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['admin'])) {
+            $this->user_array = $_SESSION['admin'];
+            $this->user_id = $_SESSION['admin']->id;
+            $this->user_account_id = $_SESSION['admin']->account_id;
+        } elseif (isset($_SESSION['munshi'])) {
+            $this->user_array = $_SESSION['munshi'];
+            $this->user_id = $_SESSION['munshi']->id;
+            $this->user_account_id = $_SESSION['munshi']->account_id;
+        } elseif (isset($_SESSION['owner'])) {
+            $this->user_array = $_SESSION['owner'];
+            $this->user_id = $_SESSION['owner']->id;
+            $this->user_account_id = $_SESSION['owner']->account_id;
+        }
     }
 
     public function random_no()
@@ -137,6 +154,7 @@ class PurchaseController extends Model
                 'item_details' => $payload['item_details'],
                 'pur_qty' => $payload['qty'],
                 'price' => ($payload['price'] != null ? $payload['price'] : 0),
+                'reg_by' => $this->user_id,
                 'doc_type' => 'purchase'
             ];
             $this->query = $this->model->insert('purinvretstk', $data);
@@ -145,10 +163,11 @@ class PurchaseController extends Model
                 'purchase_date' => $payload['purchase_date'],
                 'pur_inv_no' => $payload['pur_inv_no'],
                 'vendor_id' => $vendor_id,
-                'vendor_name' => $vendor_name,
+                'vendor_nm' => $vendor_name,
                 'vendor_city' => $vendor_city,
                 'random_no' => $rand_no,
                 'item_id' => $item_id,
+                'reg_by' => $this->user_id
                 // 'builty_no' => $payload['builty_no'],
                 // 'vehicle_no' => $payload['vehicle_no'],
             ];
@@ -229,7 +248,7 @@ class PurchaseController extends Model
             $pur_inv_no = [
                 'trans_date' => $payload['trans_date'],
                 'vendor_id' => $customer_acc_id,
-                'reg_by' => 1
+                'reg_by' => $this->user_id
             ];
 
             $this->model->insert('pur_inv_no', $pur_inv_no);
@@ -238,10 +257,9 @@ class PurchaseController extends Model
                 'purchase_date' => $payload['trans_date'],
                 'pur_inv_no' => $payload['pur_inv_no'],
                 'vendor_id' => $customer_acc_id,
-                // 'random_no' => $rand_no,
                 'builty_no' => $payload['builty_no'],
-                // 'item_id' => $item_id,
                 'vehicle_no' => $payload['vehicle_no'],
+                'reg_by' => $this->user_id,
             ];
             $this->query = $this->model->insert('pur_inv', $data1);
 

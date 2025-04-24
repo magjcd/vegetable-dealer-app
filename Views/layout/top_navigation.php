@@ -21,14 +21,14 @@ if (isset($_SESSION['admin'])) {
         <a href="index.php">
             <li>Home</li>
         </a>
-        <a href="index.php?page=purchase">
+        <a href="index.php?route=purchase">
             <li>Manage Purchases</li>
         </a>
-        <a href="index.php?page=customer">
+        <a href="index.php?route=customer">
             <li>Manage Customers</li>
         </a>
 
-        <a href="index.php?page=items">
+        <a href="index.php?route=items">
             <li>Manage Items</li>
         </a>
 
@@ -84,27 +84,27 @@ if (isset($_SESSION['admin'])) {
 					Inventory<i class="fas fa-caret-right" id="animate"></i>
 					<ul class="subMenu">
 						
-						<a href="index?page=invTray" accesskey="i">
+						<a href="index?route=invTray" accesskey="i">
 							<li>
 								<i class='fas fa-file' accesskey="v"></i>
 								&nbsp;<u>I</u>nvoice
 							</li>
 						</a>
 
-						<a href="index?page=retPurStk">
+						<a href="index?route=retPurStk">
 							<li>
 								<i class='fas fa-undo'></i>
 								&nbsp;<u>R</u>eturn Stock
 							</li>
 						</a>
 
-						<a href="index?page=purTray" accesskey="p">
+						<a href="index?route=purTray" accesskey="p">
 							<li><i class="fas fa-shopping-cart"></i>
 								<u>P</u>urchase Stock Menu
 							</li>
 						</a>
 
-						<a href="index?page=gjTray" accesskey="j">
+						<a href="index?route=gjTray" accesskey="j">
 							<li><i class="fas fa-shopping-cart"></i>
 								General<u>J</u>ournal
 							</li>
@@ -117,13 +117,13 @@ if (isset($_SESSION['admin'])) {
 					<i class="fas fa-search"></i>&nbsp;
 					New<i class="fas fa-caret-right" id="animate"></i>
 					<ul class="subMenu">
-						<a href="index?page=addSubHdAcc" accesskey="v"><li>Sub Headers</li></a>
-						<a href="index?page=cusTp" accesskey="t"><li>Customer Type</li></a>
-						<a href="index?page=addAccCus" accesskey="a"><li>Customer Account</li></a>
-						<a href="index?page=addTown" accesskey=""><li>Town</li></a>
-						<a href="index?page=addSlMan" accesskey=""><li>Salesman</li></a>
-						<a href="index?page=addDlMan" accesskey=""><li>Deliveryman</li></a>
-						<a href="index?page=addAccLed" accesskey="t"><li>Ledger Account</li></a>
+						<a href="index?route=addSubHdAcc" accesskey="v"><li>Sub Headers</li></a>
+						<a href="index?route=cusTp" accesskey="t"><li>Customer Type</li></a>
+						<a href="index?route=addAccCus" accesskey="a"><li>Customer Account</li></a>
+						<a href="index?route=addTown" accesskey=""><li>Town</li></a>
+						<a href="index?route=addSlMan" accesskey=""><li>Salesman</li></a>
+						<a href="index?route=addDlMan" accesskey=""><li>Deliveryman</li></a>
+						<a href="index?route=addAccLed" accesskey="t"><li>Ledger Account</li></a>
 					</ul>
 				</li> -->
 
@@ -134,16 +134,20 @@ if (isset($_SESSION['admin'])) {
                     <a href="index" accesskey="u">
                 <li>City Management</li>
                 </a>
-                <!-- <a href="index?page=slManTrgt" accesskey="v"><li>Salesman Target</li></a> -->
-                <a href="index?page=customer" accesskey="g">
+                <!-- <a href="index?route=slManTrgt" accesskey="v"><li>Salesman Target</li></a> -->
+                <a href="index?route=customer" accesskey="g">
                     <li>Account Management</li>
                 </a>
-                <a href="index?page=items" accesskey="s">
+                <a href="index?route=items" accesskey="s">
                     <li>Items Management</li>
                 </a>
 
-                <a href="index?page=purchases" accesskey="s">
+                <a href="index?route=purchases" accesskey="s">
                     <li>Items Management</li>
+                </a>
+
+                <a href="index?route=users_management" accesskey="s">
+                    <li>Users Management</li>
                 </a>
                 <!-- </ul> -->
                 </li>
@@ -152,8 +156,8 @@ if (isset($_SESSION['admin'])) {
 					<i class="fas fa-shuttle-van"></i>&nbsp;
 					Van<i class="fas fa-caret-right" id="animate"></i>
 					<ul class="subMenu">
-						<a href="index?page=slInvDSS" accesskey="s"><li>DSS / Loading</li></a>
-						<a href="index?page=slManTrgt" accesskey="v"><li>Salesman Target</li></a>
+						<a href="index?route=slInvDSS" accesskey="s"><li>DSS / Loading</li></a>
+						<a href="index?route=slManTrgt" accesskey="v"><li>Salesman Target</li></a>
 					</ul>
 				</li> -->
 
@@ -161,11 +165,11 @@ if (isset($_SESSION['admin'])) {
 					<i class="fas fa-folder-open" accesskey="r"></i>&nbsp;
 					Reports&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-right" id="animate"></i>
 					<ul class="subMenu">
-						<a href="index?page=rptDwAcc" accesskey="d"><li>Date Wise Account Report</li></a>
-						<a href="index?page=rptDwSHd" accesskey=""><li>Sub-Header Wise Account Report</li></a>
-						<a href="index?page=rptCompDW" accesskey="r"><li>Date Wise Company Report</li></a>
-						<a href="index?page=rptCompCusDW&action=CG" accesskey="g"><li>Group Wise Report</li></a>
-						<a href="index?page=rptCompCusDW&action=CC" accesskey="c"><li>Customer Company Report</li></a>
+						<a href="index?route=rptDwAcc" accesskey="d"><li>Date Wise Account Report</li></a>
+						<a href="index?route=rptDwSHd" accesskey=""><li>Sub-Header Wise Account Report</li></a>
+						<a href="index?route=rptCompDW" accesskey="r"><li>Date Wise Company Report</li></a>
+						<a href="index?route=rptCompCusDW&action=CG" accesskey="g"><li>Group Wise Report</li></a>
+						<a href="index?route=rptCompCusDW&action=CC" accesskey="c"><li>Customer Company Report</li></a>
 					</ul>
 				</li> -->
 
@@ -173,9 +177,9 @@ if (isset($_SESSION['admin'])) {
 					<i class="fas fa-briefcase-medical"></i>&nbsp;
 					Company&nbsp;<i class="fas fa-caret-right" id="animate"></i>
 					<ul class="subMenu">
-						<a href="index?page=addComp" accesskey="c"><li><u>C</u>ompany</li></a>
-						<a href="index?page=addGrp" accesskey="g"><li><u>G</u>roup</li></a>
-						<a href="index?page=addPrd" accesskey="u"><li>Prod<u>u</u>ct</li></a>
+						<a href="index?route=addComp" accesskey="c"><li><u>C</u>ompany</li></a>
+						<a href="index?route=addGrp" accesskey="g"><li><u>G</u>roup</li></a>
+						<a href="index?route=addPrd" accesskey="u"><li>Prod<u>u</u>ct</li></a>
 					</ul>
 				</li> -->
 
@@ -183,11 +187,11 @@ if (isset($_SESSION['admin'])) {
                     <i class="fas fa-link"></i>&nbsp;
                     Connect&nbsp;<i class="fas fa-caret-right" id="animate"></i>
                     <ul class="subMenu">
-                        <a href="index?page=compPrivilege" accesskey="r">
+                        <a href="index?route=compPrivilege" accesskey="r">
                             <li>Company / Group P<u>r</u>ivilege</li>
                         </a>
-                        <!-- <a href="index?page=addGrp" accesskey="g"><li><u>G</u>roup</li></a>
-						<a href="index?page=addPrd" accesskey="u"><li>Prod<u>u</u>ct</li></a> -->
+                        <!-- <a href="index?route=addGrp" accesskey="g"><li><u>G</u>roup</li></a>
+						<a href="index?route=addPrd" accesskey="u"><li>Prod<u>u</u>ct</li></a> -->
                     </ul>
                 </li>
 
@@ -221,8 +225,8 @@ if (isset($_SESSION['admin'])) {
             </div>
 
             <div>
-                <a href="index?route=items">
-                    <i class="fa fa-shopping-cart"></i>
+                <a href="index?route=general_journal">
+                    <i class="fa fa-book-open"></i>
                 </a>
             </div>
 

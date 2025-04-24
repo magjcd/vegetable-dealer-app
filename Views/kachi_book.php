@@ -2,12 +2,11 @@
 <?php
 ini_set('display_error', 1);
 $inv_no = $obj_sell->sellInvNo();
-$cities = $obj_general->fetchAllCities();
+$cities = $obj_general->listAllCities();
 $list_acc_recs = $obj_account->listAccountByType(1); // Accounts Receivable -> Sub Header is 1
 $bal_qtys = $obj_sell->availableQty();
 $list_sales_inventory = $obj_financial->listSalesInventory("Sells");
-// echo '<pre>';
-// print_r($bal_qtys);
+
 if (isset($_POST['sell_inv_no'])) {
 ?>
     <script>
@@ -26,9 +25,9 @@ if (isset($_POST['sell_inv_no'])) {
 <div class="container">
     <!-- <h3 style="text-align: center;">گاہک کی تفصیل</h3> -->
     <!-- Button to Open the Modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
         مال کا کچا اندراج
-    </button>
+    </button> -->
 
     <!-- The Modal -->
     <div class="modal" id="myModal">
@@ -109,7 +108,7 @@ if (isset($_POST['sell_inv_no'])) {
                     $tot_qty = ($bal_qty->tot_pur_qty - $bal_qty->tot_sl_qty);
                     if ($tot_qty != 0) {
                 ?>
-                        <option value="<?php echo $bal_qty->random_no . '|' . $bal_qty->builty_no . '|' . $bal_qty->vehicle_no . '|' . $bal_qty->item_id . '|' . $bal_qty->item_name; ?>"><?php echo $tot_qty . ' / ' . $bal_qty->tot_pur_qty . ' - ' . $bal_qty->vendor_name . ' - ' . $bal_qty->vendor_city . ' - ' . $bal_qty->item_name; ?></option>
+                        <option value="<?php echo $bal_qty->random_no . '|' . $bal_qty->builty_no . '|' . $bal_qty->vehicle_no . '|' . $bal_qty->item_id . '|' . $bal_qty->item_name . '|' . $bal_qty->vendor_id; ?>"><?php echo $tot_qty . ' / ' . $bal_qty->tot_pur_qty . ' - ' . $bal_qty->vendor_nm . ' - ' . $bal_qty->vendor_city . ' - ' . $bal_qty->item_name; ?></option>
                 <?php
                     }
                 }
@@ -174,6 +173,7 @@ if (isset($_POST['sell_inv_no'])) {
 
 <script>
     $(document).ready(function() {
+        $('#customer').focus();
         $('#sell_stock').on('click', function(e) {
             e.preventDefault();
 
@@ -227,9 +227,11 @@ if (isset($_POST['sell_inv_no'])) {
                         return;
                     }
                     kachi_book_report_unsaved(); // Calling Kachi listing Report on addition of a single item
-
+                    $('#vendor').focus();
                     $('#sell_stock').html('Add');
                     $('.text-success').html(response.message).show();
+                    $('#qty').val(0)
+                    $('#price').val(0)
                     console.log(data);
 
                 },
@@ -274,19 +276,20 @@ if (isset($_POST['sell_inv_no'])) {
                             });
                             $('.text-success').html(response.message).show();
                         }
+                        kachi_book_report_unsaved_count();
                         $('.btn-primary').html('Add');
                         response.errors.customer ? $('#error_customer').html(response.errors.customer) : '';
                     }
 
                     $('.text-success').html(response.message).show();
-                    // Swal.fire({
-                    //     title: "بل بن چکا ہے۔",
-                    //     text: "نیا بل جینیریٹ ہو رہا ہے، انتظار کریں۔",
-                    //     icon: "success"
-                    // });
-                    // setTimeout(function() {
-                    //     window.location.replace('index?route=kachi_book')
-                    // }, 3000);
+                    Swal.fire({
+                        title: "بل بن چکا ہے۔",
+                        text: "نیا بل جینیریٹ ہو رہا ہے، انتظار کریں۔",
+                        icon: "success"
+                    });
+                    setTimeout(function() {
+                        window.location.replace('index?route=kachi_book')
+                    }, 3000);
                     console.log(data);
 
                 },
@@ -378,6 +381,42 @@ if (isset($_POST['sell_inv_no'])) {
             })
         }
         kachi_book_report_unsaved_count();
+
+        // Delete unsaved item fro kachi
+        function it_delete() {
+            $(document).on('click', '.delete_sng_unsaved_item', function(e) {
+                e.preventDefault();
+                const item_id = $(this).data('id');
+
+                let payload = {
+                    'flag': 'delete_unsaved_sng_item',
+                    item_id: item_id
+                }
+
+                $.ajax({
+                    url: 'Views/actions.php',
+                    type: 'POST',
+                    data: payload,
+
+                    success: function(data) {
+                        // let response = JSON.parse(data);
+                        // if (response.success == false) {
+                        // }
+                        kachi_book_report_unsaved(); // Calling Kachi listing Report on addition of a single item
+                        kachi_book_report_unsaved_count();
+                        console.log(data);
+
+                    },
+
+                    error: function(request, status, error) {
+                        console.log(request.responseText);
+
+                    }
+                })
+            })
+        }
+
+        it_delete();
 
         // jQuery Data Table
         $('#myTable').DataTable();

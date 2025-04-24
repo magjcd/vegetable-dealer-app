@@ -30,10 +30,12 @@
 
 <body class="container-fluid">
     <?php
-    ini_set('display_errors', '1');
-    ini_set('display_startup_errors', '1');
-    error_reporting(E_ALL);
-    session_start();
+
+    // KEEP THEM COMMENTED IN PRODUCTION ENVIRONMENT
+    // ini_set('display_errors', '1');
+    // ini_set('display_startup_errors', '1');
+    // error_reporting(E_ALL);
+
     include_once('./autoload.php');
 
     use Controllers\AuthController;
@@ -42,6 +44,7 @@
     use Controllers\GeneralController;
     use Controllers\ItemController;
     use Controllers\PurchaseController;
+    use Controllers\RoleController;
     use Controllers\SellController;
     use Controllers\UserController;
 
@@ -53,6 +56,7 @@
     $obj_sell = new SellController;
     $obj_purchase = new PurchaseController;
     $obj_financial = new FinanacialController;
+    $obj_role = new RoleController;
 
     if (count($_SESSION) == 0) {
         header('location: login');
@@ -78,7 +82,7 @@
     } else {
         include_once(__DIR__ . '/Views/layout/dashboard.php');
     }
-    echo '<div style="margin-bottom: 100px;"></div>';
+    echo '<div style="margin-bottom: 50px;"></div>';
     include_once('./Views/layout/footer.php');
     ?>
 

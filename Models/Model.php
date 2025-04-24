@@ -47,6 +47,7 @@ class Model extends database
 
     protected function rawCmd($cmd)
     {
+        // echo $cmd;
         $this->sql = $this->conn->query($cmd);
         return $this->sql;
     }

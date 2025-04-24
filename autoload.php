@@ -1,6 +1,6 @@
 <?php
 ini_set('display_error', 1);
-// session_start();
+session_start();
 
 include_once(realpath(__DIR__) . '/config/variables.php');
 include_once(realpath(__DIR__) . '/config/database.php');
@@ -14,6 +14,7 @@ include_once(realpath(__DIR__) . '/Controllers/ItemController.php');
 include_once(realpath(__DIR__) . '/Controllers/SellController.php');
 include_once(realpath(__DIR__) . '/Controllers/PurchaseController.php');
 include_once(realpath(__DIR__) . '/Controllers/FinanacialController.php');
+include_once(realpath(__DIR__) . '/Controllers/RoleController.php');
 
 
 

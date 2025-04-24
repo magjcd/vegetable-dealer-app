@@ -19,15 +19,15 @@
     sl_qty int,
     sl_ret_qty int,
     price int, 
-    reg_by int
+    doc_type ENUM('sell','sell_ret','purchase','purchase_ret'),
+    reg_by int,
+    invoiced ENUM('0','1') DEFAULT '0',
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    doc_type ENUM('sell','sell_ret','purchase','purchase_ret'),
 
     PRIMARY KEY (id),
     
-    -- CONSTRAINT fk_sell_inv_no_purinvretstk FOREIGN KEY (sell_inv_no) REFERENCES sell_inv_no(id) ON DELETE CASCADE, 
     CONSTRAINT fk_customer_acc_id_purinvretstk FOREIGN KEY (customer_acc_id) REFERENCES accounts(id) ON DELETE CASCADE, 
     CONSTRAINT fk_item_id_purinvretstk FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
     CONSTRAINT fk_customer_city_id_purinvretstk FOREIGN KEY (customer_city_id) REFERENCES cities(id) ON DELETE CASCADE,

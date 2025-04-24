@@ -11,6 +11,23 @@ class AccountController extends Model
     public function __construct()
     {
         $this->model = new Model;
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['admin'])) {
+            $this->user_array = $_SESSION['admin'];
+            $this->user_id = $_SESSION['admin']->id;
+            $this->user_account_id = $_SESSION['admin']->account_id;
+        } elseif (isset($_SESSION['munshi'])) {
+            $this->user_array = $_SESSION['munshi'];
+            $this->user_id = $_SESSION['munshi']->id;
+            $this->user_account_id = $_SESSION['munshi']->account_id;
+        } elseif (isset($_SESSION['owner'])) {
+            $this->user_array = $_SESSION['owner'];
+            $this->user_id = $_SESSION['owner']->id;
+            $this->user_account_id = $_SESSION['owner']->account_id;
+        }
     }
 
     public function addAccount($payload)
@@ -108,8 +125,11 @@ class AccountController extends Model
             $this->rows = null;
             $this->data = null;
 
-            // $this->query = $this->model->fetchAll('accounts');
-            $this->query = $this->model->rawCmd('SELECT `accounts`.`id` as id,`accounts`.`account_holder_name` as acc_name, `accounts`.`header_id` as hid, `accounts`.`sub_header_id` as subid, `cities`.`city_name` as ct_name FROM `accounts` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id`');
+            if ($this->user_role == 'admin') {
+                $this->query = $this->model->rawCmd('SELECT `accounts`.`id` as id,`accounts`.`account_holder_name` as acc_name, `accounts`.`header_id` as hid, `accounts`.`sub_header_id` as subid, `cities`.`city_name` as ct_name FROM `accounts` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id`');
+            } else {
+                $this->query = $this->model->rawCmd('SELECT `accounts`.`id` as id,`accounts`.`account_holder_name` as acc_name, `accounts`.`header_id` as hid, `accounts`.`sub_header_id` as subid, `cities`.`city_name` as ct_name FROM `accounts` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id` WHERE `accounts`.`sub_header_id` = 1');
+            }
             if ($this->query->num_rows > 0) {
                 while ($this->rows = $this->query->fetch_object()) {
                     $this->data[] = $this->rows;
@@ -120,6 +140,26 @@ class AccountController extends Model
             }
             // echo json_encode(['success' => false, 'message' => 'no record is available'], 302);
             // die();
+        } catch (\Exception $e) {
+            echo json_encode(['success' => true, 'message' => $e->getMessage()], 500);
+            die();
+        }
+    }
+
+    public function listUserAccountsForGJ()
+    {
+        try {
+            $this->query = null;
+            $this->rows = null;
+            $this->data = null;
+
+            $this->query = $this->model->rawCmd('SELECT `accounts`.`id` as accounts_id,`accounts`.`account_holder_name` as acc_name, `accounts`.`header_id` as hid, `accounts`.`sub_header_id` as subid, `users`.`id` as users_id, `users`.`account_id` as user_acc_id FROM `accounts` INNER JOIN `users` ON `accounts`.`id` = `users`.`account_id`');
+            if ($this->query->num_rows > 0) {
+                while ($this->rows = $this->query->fetch_object()) {
+                    $this->data[] = $this->rows;
+                }
+                return $this->data;
+            }
         } catch (\Exception $e) {
             echo json_encode(['success' => true, 'message' => $e->getMessage()], 500);
             die();
@@ -158,8 +198,28 @@ class AccountController extends Model
                 while ($this->rows = $this->query->fetch_object()) {
                     $this->data[] = $this->rows;
                 }
-                return $this->data;
             }
+            return $this->data;
+        } catch (\Exception $e) {
+            echo json_encode(['success' => true, 'message' => $e->getMessage()], 500);
+            die();
+        }
+    }
+
+    public function listAccountsByCitySubHeader($id, $s_hd_id)
+    {
+        try {
+            $this->query = null;
+            $this->rows = null;
+            $this->data = null;
+
+            $this->query = $this->model->fetchSingle('accounts', 'city_id = ' . $id . ' AND sub_header_id = ' . $s_hd_id);
+            // if ($this->query->num_rows > 0) {
+            while ($this->rows = $this->query->fetch_object()) {
+                $this->data[] = $this->rows;
+            }
+            return $this->data;
+            // }
         } catch (\Exception $e) {
             echo json_encode(['success' => true, 'message' => $e->getMessage()], 500);
             die();

@@ -7,7 +7,7 @@ include_once(realpath(__DIR__) . '/../../config/database.php');
 
 use config\database;
 
-class cities extends database
+class ledger extends database
 {
     public function __construct()
     {
@@ -21,8 +21,8 @@ class cities extends database
                             customer_acc_id int NOT NULL,
                             customer_header_id int NOT NULL,
                             customer_sub_header_id int NOT NULL,
-                            dr int,
-                            cr int,
+                            dr int DEFAULT (0),
+                            cr int DEFAULT (0),
                             doc_type ENUM('sell','sell_ret','purchase','purchase_ret','gj'),
                             reg_by int,
                         
@@ -37,7 +37,7 @@ class cities extends database
                             CONSTRAINT fk_customer_sub_header_id_ledger FOREIGN KEY (customer_sub_header_id) REFERENCES sub_headers(id) ON DELETE CASCADE ON UPDATE CASCADE,
                             CONSTRAINT fk_reg_by_ledger FOREIGN KEY (reg_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 
-                        ) ENGINE=INNODB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_general_ci;");
+                        ) ENGINE=INNODB AUTo_INCREMENT=1 DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_general_ci;");
     }
 }
-new cities;
+new ledger;

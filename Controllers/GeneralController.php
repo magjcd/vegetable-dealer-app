@@ -11,20 +11,36 @@ class GeneralController extends Model
     public function __construct()
     {
         $this->model = new Model;
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['admin'])) {
+            $this->user_array = $_SESSION['admin'];
+            $this->user_id = $_SESSION['admin']->id;
+            $this->user_account_id = $_SESSION['admin']->account_id;
+        } elseif (isset($_SESSION['munshi'])) {
+            $this->user_array = $_SESSION['munshi'];
+            $this->user_id = $_SESSION['munshi']->id;
+            $this->user_account_id = $_SESSION['munshi']->account_id;
+        } elseif (isset($_SESSION['owner'])) {
+            $this->user_array = $_SESSION['owner'];
+            $this->user_id = $_SESSION['owner']->id;
+            $this->user_account_id = $_SESSION['owner']->account_id;
+        }
     }
 
-    public function fetchAllCities()
+    public function listAllCities()
     {
         $this->query = null;
         $this->rows = null;
         $this->data = null;
         $this->query = $this->model->fetchAll('cities');
-        // if ($this->query->num_rows >= 1) {
+
         while ($this->rows = $this->query->fetch_object()) {
             $this->data[] = $this->rows;
         }
         return $this->data;
-        // }
     }
 
     public function listHeaders() {}

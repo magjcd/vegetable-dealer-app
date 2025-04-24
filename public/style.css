@@ -33,7 +33,13 @@ li {
     display: none;
 }
 
-@media only screen and (max-width: 600px) {
+.un-success {
+    display: none;
+    width: 500px;
+    height: auto;
+}
+
+@media only screen and (max-width: 767px) {
     .dashboard_boxes {
         width: 100%;
         display: block;
@@ -72,7 +78,7 @@ li {
         color: #fff;
     }
     
-    .footer_user_info .footer_user_sign_out {
+    .footer_user_info .footer_user_sign_out .top_user_info {
         display: none;
     }
     /* End Footer Menu */

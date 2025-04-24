@@ -347,7 +347,7 @@ $list_sales_inventory = $obj_financial->listSalesInventory("Inventory");
                         icon: "success"
                     });
                     setTimeout(function() {
-                        window.location.replace('index?route=kachi_book')
+                        window.location.replace('index?route=purchase')
                     }, 3000);
                     console.log(data);
 

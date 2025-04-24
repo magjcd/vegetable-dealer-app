@@ -1,5 +1,10 @@
 <div class="dashboard-main-container">
     <h4>Dashboard</h4>
+    <?php
+    // echo '<pre>';
+    // if (gc_enabled()) gc_collect_cycles();
+    // print_r(gc_status());
+    ?>
     <div class="dashboard_boxes" style="background-color: red; color: #fff;">
         <p>
             <b>

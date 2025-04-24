@@ -22,3 +22,6 @@
     CONSTRAINT fk_reg_by_accounts FOREIGN KEY (reg_by) REFERENCES users(id) ON DELETE CASCADE
     
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_general_ci;";
+
+"INSERT INTO `accounts`(account_holder_name,header_id,sub_header_id) VALUES('Sells',1,3);";
+"INSERT INTO `accounts`(account_holder_name,header_id,sub_header_id) VALUES('Inventory',1,4);";

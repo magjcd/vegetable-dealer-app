@@ -30,4 +30,8 @@ trait variables
     public $data;
     public $errors = [];
     public $error;
+    public $user_array = null;
+    public $user_id = null;
+    public $user_account_id = null;
+    protected $user_role = null;
 }

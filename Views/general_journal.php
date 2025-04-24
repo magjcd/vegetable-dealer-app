@@ -1,12 +1,15 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php
-$list_accs = $obj_account->listAccountsForGJ(); // Accounts Receivable -> Sub Header is 1
-
-// echo '<pre>';
-// print_r($list_accs);
+$list_accs = $obj_account->listAccountsForGJ();
+$list_collector_accs = $obj_account->listUserAccountsForGJ();
 ?>
 <div>
-    <h3 style="text-align: center;"> جنرل جرنل</h3>
+    <?php if ($obj_account->user_array->role == 'munshi') { ?>
+        <h3 style="text-align: center;">وصولی بک</h3>
+    <?php } else { ?>
+        <h3 style="text-align: center;"> جنرل جرنل</h3>
+
+    <?php } ?>
 </div>
 
 
@@ -19,7 +22,13 @@ $list_accs = $obj_account->listAccountsForGJ(); // Accounts Receivable -> Sub He
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">جنرل جرنل</h4>
+                    <?php
+                    if ($obj_account->user_array->role == 'munshi') {
+                        echo '<h4 class="modal-title"> وصولی بک</h4>';
+                    } else {
+                        echo '<h4 class="modal-title">جنرل جرنل</h4>';
+                    } ?>
+
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
@@ -73,6 +82,31 @@ $list_accs = $obj_account->listAccountsForGJ(); // Accounts Receivable -> Sub He
             <span class="text-danger" id="error_account_info"></span>
         </div>
 
+        <?php
+        if ($obj_account->user_array->role != 'munshi') {
+        ?>
+            <div class="form-group" style="text-align: right;">
+                <label for="collector">
+                    <h5>وصول کنندہ</h5>
+                </label>
+                <select id="collector" name="collector" class="form-control" style="text-align: right;">
+                    <option value="">وصول کنندہ</option>
+                    <option value="" disabled>--------------------------------</option>
+                    <?php
+                    foreach ($list_collector_accs as $list_collector_acc) {
+                    ?>
+                        <option <?php echo $list_collector_acc->accounts_id == $obj_account->user_account_id ? 'selected = "selected" readonly="true"' : ''; ?> value="<?php echo $list_collector_acc->accounts_id . '|' . $list_collector_acc->hid . '|' . $list_collector_acc->subid; ?>"><?php echo $list_collector_acc->acc_name; ?></option>
+                    <?php
+                    }
+                    ?>
+                </select>
+                <span class="text-danger" id="error_collector"></span>
+            </div>
+
+        <?php
+        }
+        ?>
+
         <div class="form-group" style="text-align: right;">
             <label for="details">
                 <h5>تفصیل</h5>
@@ -85,26 +119,32 @@ $list_accs = $obj_account->listAccountsForGJ(); // Accounts Receivable -> Sub He
             <label for="dr">
                 <h5>جمع</h5>
             </label>
-            <input type="number" class="form-control" id="dr" placeholder="جمع" name="dr">
+            <input type="number" class="form-control" id="dr" placeholder="جمع" name="dr" dir="rtl">
             <span class="text-danger" id="error_dr"></span>
         </div>
 
-        <div class="form-group" style="text-align: right;">
+        <?php
+        // if ($obj_account->user_array->role != 'munshi') {
+        ?>
+        <div class="form-group" style="text-align: right;" <?php echo $obj_account->user_array->role != 'munshi' ? "hidden='true'" :  "hidden='false'"; ?>>
             <label for="cr">
                 <h5>نام</h5>
             </label>
-            <input type="number" class="form-control" id="cr" placeholder="نام" name="cr">
+            <input type="number" class="form-control" id="cr" placeholder="نام" name="cr" dir="rtl">
             <span class="text-danger" id="error_cr"></span>
         </div>
 
+        <?php
+        // }
+        ?>
 
         <button type="submit" id="add_gj_entry" class="btn btn-primary">Add</button>
     </form>
 
+    <div style="overflow: auto;" id="view_gj_entries"></div>
 </div>
 
 
-<div style="overflow: auto;" id="view_gj_entries"></div>
 
 <script>
     $(document).ready(function() {
@@ -116,6 +156,7 @@ $list_accs = $obj_account->listAccountsForGJ(); // Accounts Receivable -> Sub He
                 flag: 'add_gj_entry',
                 trans_date: null,
                 account_info: null,
+                collector: null,
                 details: null,
                 dr: null,
                 cr: null,
@@ -125,6 +166,7 @@ $list_accs = $obj_account->listAccountsForGJ(); // Accounts Receivable -> Sub He
                 flag: 'add_gj_entry',
                 trans_date: $('#gj_date').val(),
                 account_info: $('#account_info').val(),
+                collector: $('#collector').val(),
                 details: $('#details').val(),
                 dr: $('#dr').val(),
                 cr: $('#cr').val(),
@@ -150,15 +192,16 @@ $list_accs = $obj_account->listAccountsForGJ(); // Accounts Receivable -> Sub He
                     let response = JSON.parse(data);
                     if (response.success == false) {
                         response.errors.account_info ? $('#error_account_info').html(response.errors.account_info) : '';
+                        response.errors.collector ? $('#error_collector').html(response.errors.collector) : '';
                         response.errors.details ? $('#error_details').html(response.errors.details) : '';
                         response.errors.dr ? $('#error_dr').html(response.errors.dr) : '';
                         $('#add_gj_entry').html('Add');
                         return;
                     }
-                    // kachi_book_report_unsaved(); // Calling Kachi listing Report on addition of a single item
 
                     $('#add_gj_entry').html('Add');
                     $('.text-success').html(response.message).show();
+                    gj_entries();
                     console.log(data);
 
                 },
@@ -170,51 +213,47 @@ $list_accs = $obj_account->listAccountsForGJ(); // Accounts Receivable -> Sub He
         });
 
         // On page load this report
-        // function kachi_book_report() {
-        //     let payload = {
-        //         trans_date: $('#sell_date').val()
-        //     }
+        function gj_entries() {
+            $.ajax({
+                url: 'Views/reports/gj_entries.php',
+                type: 'POST',
+                // data: payload,
 
-        //     $.ajax({
-        //         url: 'Views/reports/gj_entries.php',
-        //         type: 'POST',
-        //         data: payload,
+                success: function(data) {
+                    $('#view_gj_entries').html(data)
+                    console.log(data);
+                },
+                error: function(request, status, error) {
+                    console.log(request.responseText);
 
-        //         success: function(data) {
-        //             $('#view_gj_entries').html(data)
-        //             console.log(data);
-        //         },
-        //         error: function(request, status, error) {
-        //             console.log(request.responseText);
-
-        //         }
-        //     })
-        // }
+                }
+            })
+        }
+        gj_entries();
 
         // On date change this report
-        // $('#sell_date').on('change', function(e) {
-        //     e.preventDefault();
-        //     let payload = {
-        //         trans_date: $('#sell_date').val()
-        //     }
+        $('#gj_date').on('change', function(e) {
+            e.preventDefault();
+            let payload = {
+                gj_date: $('#gj_date').val()
+            }
 
-        //     $.ajax({
-        //         url: 'Views/reports/gj_entries.php',
-        //         type: 'POST',
-        //         data: payload,
+            $.ajax({
+                url: 'Views/reports/gj_entries.php',
+                type: 'POST',
+                data: payload,
 
-        //         success: function(data) {
-        //             $('#view_gj_entries').html(data)
-        //             console.log(data);
-        //         },
-        //         error: function(request, status, error) {
-        //             console.log(request.responseText);
+                success: function(data) {
+                    $('#view_gj_entries').html(data)
+                    console.log(data);
+                },
+                error: function(request, status, error) {
+                    console.log(request.responseText);
 
-        //         }
-        //     })
-        // })
+                }
+            })
+        })
 
-        // kachi_book_report();
 
         // jQuery Data Table
         $('#myTable').DataTable();

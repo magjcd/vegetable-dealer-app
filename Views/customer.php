@@ -1,6 +1,6 @@
     <?php
     ini_set('display_error', 1);
-    $cities = $obj_general->fetchAllCities();
+    $cities = $obj_general->listAllCities();
     $list_customers = $obj_account->listAccounts();
     $list_sub_headers = $obj_general->listSubHeadersForAccounts();
     $list_headers = $obj_general->listHeadersForAccounts();
@@ -8,13 +8,6 @@
     <u>
         <h3 style="text-align: center;">کھاتوں کی تفصیل</h3>
     </u>
-
-
-
-
-
-
-
 
     <div class="container">
         <!-- <h3 style="text-align: center;">گاہک کی تفصیل</h3> -->
@@ -142,64 +135,63 @@
             </div>
         </div>
 
-    </div>
 
+        <div style="overflow: auto;">
+            <table class="display" id="myTable">
+                <thead>
+                    <tr>
+                        <th>Actions</th>
+                        <th>Added By</th>
+                        <th>City</th>
+                        <th>Contact No.</th>
+                        <th>Business Address</th>
+                        <th>Address</th>
+                        <th>Customer Name</th>
+                    </tr>
+                </thead>
 
-    <div style="overflow: auto;">
-        <table class="display" id="myTable">
-            <thead>
-                <tr>
-                    <th>Actions</th>
-                    <th>Added By</th>
-                    <th>City</th>
-                    <th>Contact No.</th>
-                    <th>Business Address</th>
-                    <th>Address</th>
-                    <th>Customer Name</th>
-                </tr>
-            </thead>
+                <tbody>
+                    <?php
+                    if (!empty($list_customers)) {
+                        foreach ($list_customers as $list_customer) { ?>
+                            <tr>
+                                <td>
 
-            <tbody>
-                <?php
-                if (!empty($list_customers)) {
-                    foreach ($list_customers as $list_customer) { ?>
+                                    <button class="btn btn-success">
+                                        <i class="fa fa-eye">&nbsp;</i>
+                                    </button>
+
+                                    <button class="btn btn-warning">
+                                        <i class="fa fa-pencil">&nbsp;</i>
+                                    </button>
+
+                                    <button class="btn btn-danger">
+                                        <i class="fa fa-trash">&nbsp;</i>
+                                    </button>
+
+                                </td>
+                                <td><?php echo $list_customer->name; ?></td>
+                                <td><?php echo $list_customer->city_name; ?></td>
+                                <td><?php echo $list_customer->contact_no; ?></td>
+                                <td style="text-align: right;"><?php echo $list_customer->business_address; ?></td>
+                                <td style="text-align: right;"><?php echo $list_customer->address; ?></td>
+                                <td style="text-align: right;"><?php echo $list_customer->account_holder_name; ?></td>
+                            </tr>
+                        <?php
+                        }
+                    } else {
+                        ?>
                         <tr>
-                            <td>
-
-                                <button class="btn btn-success">
-                                    <i class="fa fa-eye">&nbsp;</i>
-                                </button>
-
-                                <button class="btn btn-warning">
-                                    <i class="fa fa-pencil">&nbsp;</i>
-                                </button>
-
-                                <button class="btn btn-danger">
-                                    <i class="fa fa-trash">&nbsp;</i>
-                                </button>
-
-                            </td>
-                            <td><?php echo $list_customer->name; ?></td>
-                            <td><?php echo $list_customer->city_name; ?></td>
-                            <td><?php echo $list_customer->contact_no; ?></td>
-                            <td style="text-align: right;"><?php echo $list_customer->business_address; ?></td>
-                            <td style="text-align: right;"><?php echo $list_customer->address; ?></td>
-                            <td style="text-align: right;"><?php echo $list_customer->account_holder_name; ?></td>
+                            <td colspan="7" style="text-align: center;">No record is available</td>
                         </tr>
                     <?php
-                    }
-                } else {
-                    ?>
-                    <tr>
-                        <td colspan="7" style="text-align: center;">No record is available</td>
-                    </tr>
-                <?php
 
-                } ?>
-            </tbody>
-        </table>
+                    } ?>
+                </tbody>
+            </table>
+        </div>
+
     </div>
-
     <script>
         $(document).ready(function() {
             $('#add_customer').on('click', function(e) {
