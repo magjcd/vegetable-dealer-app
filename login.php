@@ -76,7 +76,7 @@
         <form id="login_form">
 
             <div class="mb-3 mt-3">
-                <p class="text-danger un-success"></p>
+                <p class="text-danger text-center un-success"></p>
             </div>
             <div class="mb-3 mt-3">
                 <label for="email">Email:</label>
@@ -128,6 +128,10 @@
                         // return;
                         if (response.invalid_credentials) {
                             $('.un-success').html(response.invalid_credentials)
+                            $('.btn-primary').html('Login');
+                            return;
+                        } else if (response.active_status) {
+                            $('.un-success').html(response.active_status)
                             $('.btn-primary').html('Login');
                             return;
                         } else if (response.errors) {

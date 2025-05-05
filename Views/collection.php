@@ -32,7 +32,7 @@
             </select>
             <span class="text-danger" id="error_collection_date"></span>
         </div>
-        <button type="submit" id="get_collection" class="btn btn-primary">Add</button>
+        <button type="submit" id="get_collection" class="btn btn-primary">Get Data</button>
     </form>
 
     <div style="overflow: auto;" id="list_collection"></div>
@@ -40,7 +40,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#collection_date').on('change', function(e) {
+        $('#get_collection').on('click', function(e) {
             e.preventDefault();
             let payload = {
                 collection_date: $('#collection_date').val()
@@ -51,9 +51,13 @@
                 type: 'POST',
                 data: payload,
 
+                beforeSend: function() {
+                    $('#list_collection').html('انتظار کریں رپورٹ پروسیس ہو رہی ہے۔')
+                },
+
                 success: function(data) {
                     $('#list_collection').html(data)
-                    console.log(data);
+                    // console.log(data);
                 },
                 error: function(request, status, error) {
                     console.log(request.responseText);

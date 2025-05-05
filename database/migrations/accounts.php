@@ -10,11 +10,11 @@
     header_id int,
     sub_header_id int,
     reg_by int,
+    
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
-    UNIQUE(contact_no),
     
     CONSTRAINT fk_city_id_accounts FOREIGN KEY (city_id) REFERENCES cities(id) ON DELETE CASCADE,
     CONSTRAINT fk_header_id_accounts FOREIGN KEY (header_id) REFERENCES headers(id) ON DELETE CASCADE,

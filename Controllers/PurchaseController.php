@@ -35,12 +35,14 @@ class PurchaseController extends Model
         $rand_no = rand(000000000, 999999999);
         return $rand_no;
     }
+
     public function purchaseInvNo()
     {
         $this->query = null;
         $this->rows = null;
         $this->data = null;
-        $this->sql = $this->model->rawCmd('SELECT COUNT(*) as pur_inv_no FROM `pur_inv_no`');
+        // $this->sql = $this->model->rawCmd('SELECT COUNT(*) as pur_inv_no FROM `pur_inv_no`');
+        $this->sql = $this->model->rawCmd('SELECT COUNT(*) as pur_inv_no FROM `pur_inv`');
         while ($this->rows = $this->sql->fetch_object()) {
             $data = $this->rows;
         }
@@ -114,6 +116,22 @@ class PurchaseController extends Model
             $items_info_arr = explode('|', $payload['items']);
             $item_id = $items_info_arr[0];
 
+            // Firstly check in pur_inv if already saved go ahead otherwise save in this table first 
+            $chech_pur_inv_avaialble = $this->model->fetchSingle('pur_inv', 'pur_inv_no = ' . $payload['pur_inv_no'] . ' AND vendor_id = ' . $vendor_id . ' AND builty_no = "' . $payload['builty_no'] . '" AND vehicle_no = "' . $payload['vehicle_no'] . '"');
+
+            if ($chech_pur_inv_avaialble->num_rows <= 0) {
+                $data1 = [
+                    'purchase_date' => $payload['purchase_date'],
+                    'pur_inv_no' => $payload['pur_inv_no'],
+                    'vendor_id' => $vendor_id,
+                    'builty_no' => $payload['builty_no'],
+                    'vehicle_no' => $payload['vehicle_no'],
+                    'reg_by' => $this->user_id,
+                ];
+                $this->query = $this->model->insert('pur_inv', $data1);
+            }
+
+            // Getting Header and Sub Header IDs for future use
             $get_vendor_details = $this->model->fetchSingle('accounts', 'id = ' . $vendor_id);
             while ($this->rows = $get_vendor_details->fetch_object()) {
                 $header_id = $this->rows->header_id;
@@ -121,21 +139,19 @@ class PurchaseController extends Model
             }
 
             // Check if invoice items are available but in voice is not saved and DEO try to post item in an other customer within same invoice no. then halt
-            // $chech_record_avaialble = $this->model->fetchSingle('purinvretstk', 'inv_no = ' . $payload['pur_inv_no']);
-            // $available_id = null;
-            // if ($chech_record_avaialble->num_rows > 0) {
-            //     while ($check_rows = $chech_record_avaialble->fetch_object()) {
-            //         $available_id = $check_rows->customer_acc_id;
-            //     }
-            //     echo json_encode(['success' => false, 'errors' => $available_id == $vendor_id], 401);
+            $chech_record_avaialble = $this->model->fetchSingle('purinvretstk', 'inv_no = ' . $payload['pur_inv_no'] . ' AND doc_type = "purchase"');
+            $available_id = null;
+            if ($chech_record_avaialble->num_rows > 0) {
+                while ($check_rows = $chech_record_avaialble->fetch_object()) {
+                    $available_id = $check_rows->customer_acc_id;
+                }
 
-            //     die();
-            //     if ($available_id != $vendor_id) {
-            //         $this->errors['customer'] = 'You are trying to post in an other customer';
-            //         echo json_encode(['success' => false, 'errors' => $this->errors], 401);
-            //         die();
-            //     }
-            // }
+                if ($available_id != $vendor_id) {
+                    $this->errors['vendor'] = 'You are trying to post in an other customer';
+                    echo json_encode(['success' => false, 'errors' => $this->errors], 401);
+                    die();
+                }
+            }
 
             $rand_no = rand(000000000, 999999999);
 
@@ -244,24 +260,6 @@ class PurchaseController extends Model
             while ($amt_row = $get_inv_info->fetch_object()) {
                 $inv_total_amt = $amt_row->inv_amt;
             }
-
-            $pur_inv_no = [
-                'trans_date' => $payload['trans_date'],
-                'vendor_id' => $customer_acc_id,
-                'reg_by' => $this->user_id
-            ];
-
-            $this->model->insert('pur_inv_no', $pur_inv_no);
-
-            $data1 = [
-                'purchase_date' => $payload['trans_date'],
-                'pur_inv_no' => $payload['pur_inv_no'],
-                'vendor_id' => $customer_acc_id,
-                'builty_no' => $payload['builty_no'],
-                'vehicle_no' => $payload['vehicle_no'],
-                'reg_by' => $this->user_id,
-            ];
-            $this->query = $this->model->insert('pur_inv', $data1);
 
             // BELOW CODE WILL BE TRANSFERED TO VENDOR BILL MAKING
 

@@ -19,14 +19,17 @@ class AccountController extends Model
             $this->user_array = $_SESSION['admin'];
             $this->user_id = $_SESSION['admin']->id;
             $this->user_account_id = $_SESSION['admin']->account_id;
+            $this->user_role = $_SESSION['admin']->role;
         } elseif (isset($_SESSION['munshi'])) {
             $this->user_array = $_SESSION['munshi'];
             $this->user_id = $_SESSION['munshi']->id;
             $this->user_account_id = $_SESSION['munshi']->account_id;
+            $this->user_role = $_SESSION['munshi']->role;
         } elseif (isset($_SESSION['owner'])) {
             $this->user_array = $_SESSION['owner'];
             $this->user_id = $_SESSION['owner']->id;
             $this->user_account_id = $_SESSION['owner']->account_id;
+            $this->user_role = $_SESSION['owner']->role;
         }
     }
 

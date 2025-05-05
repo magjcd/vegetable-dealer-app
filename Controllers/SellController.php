@@ -265,7 +265,7 @@ class SellController extends Model
                 'customer_acc_id' => $customer_acc_id,
                 'customer_header_id' => $sub_header_id,
                 'customer_sub_header_id' => $customer_city_id,
-                'dr' => $inv_total_amt,
+                'cr' => $inv_total_amt,
                 'doc_type' => 'sell',
                 'reg_by' => $this->user_id
             ];
@@ -279,7 +279,7 @@ class SellController extends Model
                 'customer_acc_id' => $sales_rev_id,
                 'customer_header_id' => $sales_header_id,
                 'customer_sub_header_id' => $sales_sub_header_id,
-                'cr' => $inv_total_amt,
+                'dr' => $inv_total_amt,
                 'doc_type' => 'sell',
                 'reg_by' => $this->user_id
             ];

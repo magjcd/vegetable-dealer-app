@@ -15,6 +15,7 @@ include_once(realpath(__DIR__) . '/Controllers/SellController.php');
 include_once(realpath(__DIR__) . '/Controllers/PurchaseController.php');
 include_once(realpath(__DIR__) . '/Controllers/FinanacialController.php');
 include_once(realpath(__DIR__) . '/Controllers/RoleController.php');
+include_once(realpath(__DIR__) . '/Controllers/DashboardController.php');
 
 
 

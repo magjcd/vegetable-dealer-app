@@ -152,7 +152,7 @@ $list_sales_inventory = $obj_financial->listSalesInventory("Inventory");
                             <span class="text-danger" id="error_price"></span>
                         </div>
 
-                        <div class="form-group" style="text-align: right;">
+                        <div class="form-group" style="text-align: right;" hidden>
                             <label for="inventory">
                                 <h5>Inventory</h5>
                             </label>
@@ -170,7 +170,7 @@ $list_sales_inventory = $obj_financial->listSalesInventory("Inventory");
                             <span class="text-danger" id="error_customer"></span>
                         </div>
 
-                        <button type="submit" id="add_purchase" class="btn btn-primary">Add</button>
+                        <button type="submit" id="add_purchase" class="btn btn-primary">Add Item</button>
                         <button type="submit" id="save_pur_inv" name="save_pur_inv" class="btn btn-success">Save Invoice</button>
 
                     </form>
@@ -178,61 +178,56 @@ $list_sales_inventory = $obj_financial->listSalesInventory("Inventory");
             </div>
         </div>
     </div>
-</div>
 
-<!-- <div>
-    <h3 style="text-align: center;">خریداری</h3>
-</div> -->
+    <div style="overflow: auto;">
+        <table class="display" id="myTable">
+            <thead>
+                <tr>
+                    <th>Actions</th>
+                    <th>Qunatity</th>
+                    <th>Builty No.</th>
+                    <th>Item</th>
+                    <th>City</th>
+                    <th>Contact No.</th>
+                    <th>Vendor Name</th>
+                </tr>
+            </thead>
 
+            <tbody>
+                <?php
+                if (!empty($list_purchases)) {
+                    foreach ($list_purchases as $list_purchase) { ?>
+                        <tr>
+                            <td>
 
-<div style="overflow: auto;">
-    <table class="display" id="myTable">
-        <thead>
-            <tr>
-                <th>Actions</th>
-                <th>Qunatity</th>
-                <th>Builty No.</th>
-                <th>Item</th>
-                <th>City</th>
-                <th>Contact No.</th>
-                <th>Vendor Name</th>
-            </tr>
-        </thead>
+                                <button class="btn btn-success">
+                                    <i class="fa fa-eye">&nbsp;</i>
+                                </button>
 
-        <tbody>
-            <?php
-            if (!empty($list_purchases)) {
-                foreach ($list_purchases as $list_purchase) { ?>
-                    <tr>
-                        <td>
+                                <button class="btn btn-warning">
+                                    <i class="fa fa-pencil">&nbsp;</i>
+                                </button>
 
-                            <button class="btn btn-success">
-                                <i class="fa fa-eye">&nbsp;</i>
-                            </button>
+                                <button class="btn btn-danger">
+                                    <i class="fa fa-trash">&nbsp;</i>
+                                </button>
 
-                            <button class="btn btn-warning">
-                                <i class="fa fa-pencil">&nbsp;</i>
-                            </button>
-
-                            <button class="btn btn-danger">
-                                <i class="fa fa-trash">&nbsp;</i>
-                            </button>
-
-                        </td>
-                        <td style="text-align: right;"><?php echo $list_purchase->pur_qty; ?></td>
-                        <td style="text-align: right;"><?php echo $list_purchase->builty_no; ?></td>
-                        <td style="text-align: right;"><?php echo $list_purchase->item_name; ?></td>
-                        <td><?php echo $list_purchase->city_name; ?></td>
-                        <td style="text-align: right;"><a href="https://wa.me/<?php echo $list_purchase->contact_no; ?>?text= محترم <?php echo $list_purchase->account_holder_name; ?>  صاحب، آپ کی بلٹی نمبر <?php echo $list_purchase->builty_no; ?> کی تمام <?php echo $list_purchase->pur_qty; ?> بوریاں فروخت ہو گئی ہیں" class=" btn btn-success">
-                                <i class="fa fa-whatsapp">&nbsp;</i>
-                            </a> <?php echo $list_purchase->contact_no; ?></td>
-                        <td style="text-align: right;"><?php echo $list_purchase->account_holder_name; ?></td>
-                    </tr>
-            <?php
-                }
-            } ?>
-        </tbody>
-    </table>
+                            </td>
+                            <td style="text-align: right;"><?php echo $list_purchase->pur_qty; ?></td>
+                            <td style="text-align: right;"><?php echo $list_purchase->builty_no; ?></td>
+                            <td style="text-align: right;"><?php echo $list_purchase->item_name; ?></td>
+                            <td><?php echo $list_purchase->city_name; ?></td>
+                            <td style="text-align: right;"><a href="https://wa.me/<?php echo $list_purchase->contact_no; ?>?text= محترم <?php echo $list_purchase->account_holder_name; ?>  صاحب، آپ کی بلٹی نمبر <?php echo $list_purchase->builty_no; ?> کی تمام <?php echo $list_purchase->pur_qty; ?> بوریاں فروخت ہو گئی ہیں" class=" btn btn-success">
+                                    <i class="fa fa-whatsapp">&nbsp;</i>
+                                </a> <?php echo $list_purchase->contact_no; ?></td>
+                            <td style="text-align: right;"><?php echo $list_purchase->account_holder_name; ?></td>
+                        </tr>
+                <?php
+                    }
+                } ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>

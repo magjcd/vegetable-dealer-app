@@ -42,7 +42,13 @@ class AuthController extends Model
                 die();
             }
 
-            $payload = 'email = "' . $data['email'] . '" AND  password = "' . hash('sha256', $data['password']) . '" AND active = "1"';
+            $active_status = $this->model->fetchSingle('users', 'email = "' . $data['email'] . '" AND active = "1"');
+            if ($active_status->num_rows <= 0) {
+                echo json_encode(['success' => false, 'active_status' => 'you can not login with inactive status, please contact the admin'], 200);
+                die();
+            }
+
+            $payload = 'email = "' . $data['email'] . '" AND  password = "' . hash('sha256', $data['password']) . '"';
             $this->query = $this->model->fetchSingle('users', $payload);
 
             if ($this->query->num_rows >= 1) {

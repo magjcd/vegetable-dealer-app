@@ -117,12 +117,8 @@
                                 <span class="text-danger" id="error_contact_no"></span>
                             </div>
 
-                            <div class="form-group form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="remember"> Remember me
-                                </label>
-                            </div>
-                            <button type="submit" id="add_customer" class="btn btn-primary">Add</button>
+                            <button type="submit" id="add_customer" class="btn btn-primary">Save</button>
+                            <button type="submit" id="add_customer" class="btn btn-primary">Save & Exit</button>
                         </form>
                     </div>
 
@@ -234,13 +230,18 @@
                             response.errors.address ? $('#error_address').html(response.errors.address) : '';
                             response.errors.contact_no ? $('#error_contact_no').html(response.errors.contact_no) : '';
                             response.errors.city_id ? $('#error_city').html(response.errors.city_id) : '';
-                            $('.btn-primary').html('Add');
+                            $('.btn-primary').html('Save');
                             return;
                         }
 
-                        $('.btn-primary').html('Add');
+                        $('.btn-primary').html('Save');
                         $('.text-success').html(response.message).show();
-                        console.log(data);
+                        $('#error_account_holder_name').html('');
+                        $('#error_address').html('');
+                        $('#error_business_address').html('');
+                        $('#error_contact_no').html('');
+                        $('#error_city').html('');
+
 
                     },
                     error: function(request, status, error) {

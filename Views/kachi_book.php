@@ -154,22 +154,9 @@ if (isset($_POST['sell_inv_no'])) {
         <button type="submit" id="save_sell_inv" name="save_sell_inv" class="btn btn-success">Save Invoice</button>
     </form>
 
-    <!-- <div class="form-group" style="text-align: right;">
-        <label for="kachi_prev_date">
-            <h4>
-                پچھلی تاریخ کے ریکارڈ
-            </h4>
-        </label>
-        <input type="date" id="kachi_prev_date" name="kachi_prev_date" class="form-control" value="<?php echo date('Y-m-d'); ?>" />
-        </select>
-        <span class="text-danger" id="error_kachi_prev_date"></span>
-    </div> -->
-
+    <div id="view_kachi_report_unsaved"></div>
+    <div style="overflow: auto;" id="view_kachi_report"></div>
 </div>
-
-
-<div id="view_kachi_report_unsaved"></div>
-<div style="overflow: auto;" id="view_kachi_report"></div>
 
 <script>
     $(document).ready(function() {

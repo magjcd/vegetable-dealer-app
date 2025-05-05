@@ -4,18 +4,16 @@ use Controllers\FinanacialController;
 
 include_once('../../autoload.php');
 $obj_financial = new FinanacialController;
-$list_collectoions = $obj_financial->listCollection($_POST['gj_date']);
+$get_account_details = $obj_financial->getAccountDetails($_POST);
 // echo '<pre>';
-// print_r($list_collectoions);
+print_r($get_account_details);
 ?>
 
 <table class="display" id="myTable">
     <thead>
         <tr>
             <th>Actions</th>
-            <?php if ($obj_financial->user_array->role != 'munshi') { ?>
-                <th>وصول کنندہ</th>
-            <?php } ?>
+            <th>وصول کنندہ</th>
             <th>نام</th>
             <th>جمع</th>
             <th>تفصیل</th>
@@ -34,10 +32,7 @@ $list_collectoions = $obj_financial->listCollection($_POST['gj_date']);
                         </button>
 
                     </td>
-                    <?php if ($obj_financial->user_array->role != 'munshi') { ?>
-                        <td><?php echo $list_collectoion->reg_name; ?></td>
-                    <?php } ?>
-
+                    <td><?php echo $list_collectoion->reg_name; ?></td>
                     <td><?php echo $list_collectoion->cr; ?></td>
                     <td><?php echo $list_collectoion->dr; ?></td>
                     <td><?php echo $list_collectoion->details; ?></td>

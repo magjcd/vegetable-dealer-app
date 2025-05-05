@@ -47,6 +47,11 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
         </div>
 
     </div>
+    <?php
+    if ($obj_account->user_array->role == 'munshi') {
+    ?>
+        <h5 id="collection_balance" style="text-align: center;"></h5>
+    <?php } ?>
     <form id="gj_form" action="" method="POST">
         <div class="form-group">
             <span class="text-success"></span>
@@ -65,16 +70,27 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
         </div>
 
         <div class="form-group" style="text-align: right;">
+            <div style="text-align: left;" id="account_balance"></div>
             <label for="account_info">
-                <h5>گاہک</h5>
+                <?php if ($obj_account->user_array->role == 'munshi') { ?>
+                    <h5>گاہک</h5>
+                <?php } else { ?>
+                    <h5>کھاتا</h5>
+                <?php } ?>
             </label>
             <select id="account_info" name="account_info" class="form-control" style="text-align: right;">
-                <option value="">گاہک کا انتخاب</option>
+                <?php if ($obj_account->user_array->role == 'munshi') { ?>
+                    <option value="">گاہک کا انتخاب</option>
+                <?php } else { ?>
+                    <option value="">کھاتے کا انتخاب</option>
+
+                <?php } ?>
+
                 <option value="" disabled>--------------------------------</option>
                 <?php
                 foreach ($list_accs as $list_acc) {
                 ?>
-                    <option value="<?php echo $list_acc->id . '|' . $list_acc->hid . '|' . $list_acc->subid; ?>"><?php echo $list_acc->acc_name . ' ' . $list_acc->ct_name; ?></option>
+                    <option value="<?php echo $list_acc->id . '|' . $list_acc->hid . '|' . $list_acc->subid . '|' . $list_acc->acc_name . '|' . $list_acc->ct_name; ?>"><?php echo $list_acc->acc_name . ' ' . $list_acc->ct_name; ?></option>
                 <?php
                 }
                 ?>
@@ -83,28 +99,28 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
         </div>
 
         <?php
-        if ($obj_account->user_array->role != 'munshi') {
+        // if ($obj_account->user_array->role != 'munshi') {
         ?>
-            <div class="form-group" style="text-align: right;">
-                <label for="collector">
-                    <h5>وصول کنندہ</h5>
-                </label>
-                <select id="collector" name="collector" class="form-control" style="text-align: right;">
-                    <option value="">وصول کنندہ</option>
-                    <option value="" disabled>--------------------------------</option>
-                    <?php
-                    foreach ($list_collector_accs as $list_collector_acc) {
-                    ?>
-                        <option <?php echo $list_collector_acc->accounts_id == $obj_account->user_account_id ? 'selected = "selected" readonly="true"' : ''; ?> value="<?php echo $list_collector_acc->accounts_id . '|' . $list_collector_acc->hid . '|' . $list_collector_acc->subid; ?>"><?php echo $list_collector_acc->acc_name; ?></option>
-                    <?php
-                    }
-                    ?>
-                </select>
-                <span class="text-danger" id="error_collector"></span>
-            </div>
+        <div class="form-group" style="text-align: right;">
+            <label for="collector">
+                <h5>وصول کنندہ</h5>
+            </label>
+            <select id="collector" name="collector" class="form-control" style="text-align: right;">
+                <option value="">وصول کنندہ</option>
+                <option value="" disabled>--------------------------------</option>
+                <?php
+                foreach ($list_collector_accs as $list_collector_acc) {
+                ?>
+                    <option <?php echo $list_collector_acc->accounts_id == $obj_account->user_account_id ? 'selected = "selected" readonly="true"' : ''; ?> value="<?php echo $list_collector_acc->accounts_id . '|' . $list_collector_acc->hid . '|' . $list_collector_acc->subid . '|' . $list_collector_acc->acc_name; ?>"><?php echo $list_collector_acc->acc_name; ?></option>
+                <?php
+                }
+                ?>
+            </select>
+            <span class="text-danger" id="error_collector"></span>
+        </div>
 
         <?php
-        }
+        // }
         ?>
 
         <div class="form-group" style="text-align: right;">
@@ -124,18 +140,19 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
         </div>
 
         <?php
-        // if ($obj_account->user_array->role != 'munshi') {
+        // echo $obj_account->user_array->role != 'munshi';
+        if ($obj_account->user_array->role != 'munshi') {
         ?>
-        <div class="form-group" style="text-align: right;" <?php echo $obj_account->user_array->role != 'munshi' ? "hidden='true'" :  "hidden='false'"; ?>>
-            <label for="cr">
-                <h5>نام</h5>
-            </label>
-            <input type="number" class="form-control" id="cr" placeholder="نام" name="cr" dir="rtl">
-            <span class="text-danger" id="error_cr"></span>
-        </div>
+            <div class="form-group" style="text-align: right;">
+                <label for="cr">
+                    <h5>نام</h5>
+                </label>
+                <input type="number" class="form-control" id="cr" placeholder="نام" name="cr" dir="rtl">
+                <span class="text-danger" id="error_cr"></span>
+            </div>
 
         <?php
-        // }
+        }
         ?>
 
         <button type="submit" id="add_gj_entry" class="btn btn-primary">Add</button>
@@ -201,7 +218,12 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
 
                     $('#add_gj_entry').html('Add');
                     $('.text-success').html(response.message).show();
+                    $('#details').val('')
+                    $('#dr').val('')
+                    $('#cr').val('')
+                    $('#account_info').focus();
                     gj_entries();
+                    collection_balance();
                     console.log(data);
 
                 },
@@ -231,6 +253,28 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
         }
         gj_entries();
 
+        function collection_balance() {
+            let payload = {
+                flag: 'collection_balance',
+            }
+
+            $.ajax({
+                url: 'Views/actions/finance_actions.php',
+                type: 'POST',
+                data: payload,
+
+                success: function(data) {
+                    $('#collection_balance').html(`${data} آپکی طرف بقایاجات`)
+                    console.log(data);
+                },
+                error: function(request, status, error) {
+                    console.log(request.responseText);
+
+                }
+            })
+        }
+        collection_balance();
+
         // On date change this report
         $('#gj_date').on('change', function(e) {
             e.preventDefault();
@@ -254,6 +298,55 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
             })
         })
 
+        // function account_balance() {
+        $('#account_info').on('change', function() {
+
+            payload = {
+                flag: 'gj_account_balance',
+                account_info: $('#account_info').val()
+            }
+
+            $.ajax({
+                url: 'Views/actions/finance_actions.php',
+                type: 'POST',
+                data: payload,
+
+                success: function(data) {
+                    $('#account_balance').html(`${data}`)
+                },
+
+                error: function(request, status, error) {
+                    console.log(request.responseText);
+
+                }
+            })
+        });
+
+        $(document).on('click', '.delete_sng_collection_record', function(e) {
+            alert($(this).data('id'));
+            e.preventDefault();
+            let payload = {
+                flag: 'delete_collection_record',
+                uniq_id: $(this).data('id')
+            }
+
+            $.ajax({
+                url: 'Views/actions/finance_actions.php',
+                type: 'POST',
+                data: payload,
+
+                success: function(data) {
+                    console.log(data);
+                    $('.text-success').html(data)
+                    // gj_entries();
+                },
+
+                error: function(request, status, error) {
+                    console.log(request.responseText);
+
+                }
+            })
+        });
 
         // jQuery Data Table
         $('#myTable').DataTable();
