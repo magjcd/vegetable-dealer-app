@@ -5,45 +5,25 @@ use Controllers\FinanacialController;
 include_once('../../autoload.php');
 $obj_financial = new FinanacialController;
 $get_account_details = $obj_financial->getAccountDetails($_POST);
-// echo '<pre>';
-print_r($get_account_details);
 ?>
-
-<table class="display" id="myTable">
+<table class="display" id="myTable" style="text-align: right;">
     <thead>
         <tr>
-            <th>Actions</th>
             <th>وصول کنندہ</th>
             <th>نام</th>
             <th>جمع</th>
             <th>تفصیل</th>
-            <th style="text-align: right;">گاہک کا نام</th>
         </tr>
     </thead>
 
     <tbody>
         <?php
-        if (!empty($list_collectoions)) {
-            foreach ($list_collectoions as $list_collectoion) { ?>
-                <tr>
-                    <td>
-                        <button class="btn btn-danger delete_sng_collection_record" data-id=<?php echo $list_collectoion->uniq_id; ?>>
-                            <i class="fa fa-trash">&nbsp;</i>
-                        </button>
-
-                    </td>
-                    <td><?php echo $list_collectoion->reg_name; ?></td>
-                    <td><?php echo $list_collectoion->cr; ?></td>
-                    <td><?php echo $list_collectoion->dr; ?></td>
-                    <td><?php echo $list_collectoion->details; ?></td>
-                    <td style="text-align: right;"><?php echo $list_collectoion->account_holder_name; ?></td>
-                </tr>
-            <?php
-            }
-        } else {
-            ?>
+        foreach ($get_account_details as $get_account_detail) { ?>
             <tr>
-                <td colspan="5">No items are available</td>
+                <td><?php echo $get_account_detail->reg_name; ?></td>
+                <td><?php echo $get_account_detail->cr; ?></td>
+                <td><?php echo $get_account_detail->dr; ?></td>
+                <td><?php echo $get_account_detail->details; ?></td>
             </tr>
         <?php
         }

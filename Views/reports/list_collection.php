@@ -9,8 +9,6 @@ $obj_financial = new FinanacialController;
 $obj_general = new GeneralController;
 $obj_accounts = new AccountController;
 
-// echo '<pre>';
-// print_r($list_collection_accounts[0]);
 $list_cities = $obj_general->listAllCities();
 echo '<div style="text-align: center;"><h3>' . $_POST['collection_date'] . '</h3></div>';
 foreach ($list_cities as $list_city) {
@@ -20,7 +18,7 @@ foreach ($list_cities as $list_city) {
     <table class="" id="" style="border: 1px solid #000; width:100%;height:auto;">
         <thead>
             <tr style="border: 1px solid #000; width:100%;height:auto;">
-                <th style="border: 1px solid #000;text-align: center; width:100px;">نیا بیلینس</th>
+                <th style="border: 1px solid #000;text-align: center; width:100px;">بقیہ رقم</th>
                 <th style="border: 1px solid #000;text-align: center; width:100px;">وصولی</th>
                 <th style="border: 1px solid #000;text-align: center; width:100px;">مال</th>
                 <th style="border: 1px solid #000;text-align: center; width:100px;">اگرائی</th>
@@ -62,8 +60,3 @@ foreach ($list_cities as $list_city) {
 <?php
 }
 ?>
-<script>
-    $(document).ready(function() {
-        $('#myTable').DataTable();
-    })
-</script>

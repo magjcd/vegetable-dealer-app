@@ -34,7 +34,7 @@
 
             <div style="text-align: center; border-bottom: #000;">
                 <h4>
-                    <?php echo 'تاریخ: ' . $_POST['mandi_book_date'] . 'منڈی ٹوٹل :' . $mandi_book_day_total->mandi_book_day_total; ?>
+                    <?php echo 'تاریخ: ' . $_POST['mandi_book_date'] . ' منڈی ٹوٹل :' . $mandi_book_day_total->mandi_book_day_total; ?>
                 </h4>
                 <?php
                 foreach ($list_accs as $list_acc) {
@@ -42,8 +42,6 @@
                     $customer_mandi_book_total = $obj_sell->SngCustomerMandiBookTotal($list_acc['id'], $_POST['mandi_book_date'])
                 ?>
                     <div class="card-outer-body">
-                        <!-- <h2>Stretched Link in Card</h2>
-  <p>Add the .stretched-link class to a link inside the card, and it will make the whole card clickable (the card will act as a link):</p> -->
                         <div class="card" style="">
 
                             <div class="card-body text-right" style="background-color: #f2f2f2;">
@@ -68,8 +66,8 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#myTable').DataTable();
+    // $(document).ready(function() {
+    //     $('#myTable').DataTable();
 
-    })
+    // })
 </script>

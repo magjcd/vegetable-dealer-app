@@ -19,8 +19,8 @@ if (isset($_SESSION['admin'])) {
     </div>
 
     <div>
-        <a href="">
-            <i class="fa fa-shopping-cart"></i>
+        <a href="index?route=collection">
+            <i class="fa fa-dollar-sign"></i>
         </a>
     </div>
 

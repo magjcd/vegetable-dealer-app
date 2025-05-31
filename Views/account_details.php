@@ -96,7 +96,10 @@ $list_accs = $obj_account->listAccountsForGJ();
         <button type="submit" id="get_account_details" class="btn btn-primary">Get Data</button>
     </form>
 
-    <div style="overflow: auto;" id="view_account_details"></div>
+    <div style="overflow: auto;" id="view_account_details">
+        <!-- <table class="display" id="myTable">
+        </table> -->
+    </div>
 </div>
 
 
@@ -129,18 +132,18 @@ $list_accs = $obj_account->listAccountsForGJ();
                     $('#error_to_date').html('');
                     $('#error_account_info').html('');
 
-                    let response = JSON.parse(data);
-                    // if (response.success == false) {
-                    //     response.errors.from_date ? $('#error_from_date').html(response.errors.from_date) : '';
-                    //     response.errors.to_date ? $('#error_to_date').html(response.errors.to_date) : '';
-                    //     response.errors.account_info ? $('#error_account_info').html(response.errors.account_info) : '';
+                    // let response = JSON.parse(data);
+                    // if (response.hasOwnProperty('success') && response?.success == false) {
+                    //     response?.errors?.from_date ? $('#error_from_date').html(response?.errors?.from_date) : '';
+                    //     response?.errors?.to_date ? $('#error_to_date').html(response?.errors?.to_date) : '';
+                    //     response?.errors?.account_info ? $('#error_account_info').html(response?.errors?.account_info) : '';
                     //     $('#get_account_details').html('Get Data');
                     //     return;
-                    // }
+                    // } else {
                     $('#get_account_details').html('Get Data');
                     $('#view_account_details').html(data);
                     console.log(data);
-
+                    // }
                 },
 
                 error: function(request, status, error) {
@@ -149,9 +152,6 @@ $list_accs = $obj_account->listAccountsForGJ();
                 }
             })
         });
-
-        // jQuery Data Table
-        $('#myTable').DataTable();
     });
 </script>
 <style>

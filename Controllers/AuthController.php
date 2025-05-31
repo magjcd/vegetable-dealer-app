@@ -42,9 +42,15 @@ class AuthController extends Model
                 die();
             }
 
+            $available_status = $this->model->fetchSingle('users', 'email = "' . $data['email'] . '"');
+            if ($available_status->num_rows <= 0) {
+                echo json_encode(['success' => false, 'active_status' => 'login information could not be find'], 401);
+                die();
+            }
+
             $active_status = $this->model->fetchSingle('users', 'email = "' . $data['email'] . '" AND active = "1"');
             if ($active_status->num_rows <= 0) {
-                echo json_encode(['success' => false, 'active_status' => 'you can not login with inactive status, please contact the admin'], 200);
+                echo json_encode(['success' => false, 'active_status' => 'you can not login with inactive status, please contact the admin'], 401);
                 die();
             }
 

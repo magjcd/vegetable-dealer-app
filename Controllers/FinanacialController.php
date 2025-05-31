@@ -387,10 +387,12 @@ class FinanacialController extends Model
             $customer_info_arr = explode('|', $payload['account_info']);
             $customer_acc_id = $customer_info_arr[0];
 
-            $this->query = $this->model->rawCmd('SELECT `ledger`.`details`,`ledger`.`dr`,`ledger`.`cr` FROM `ledger` WHERE customer_acc_id = ' . $customer_acc_id . ' AND gj_date >= ' . $payload['from_date'] . ' AND gj_date <= ' . $payload['to_date']);
+            $this->query = $this->model->rawCmd('SELECT `ledger`.`details`,`ledger`.`dr`,`ledger`.`cr` FROM `ledger` WHERE customer_acc_id = ' . $customer_acc_id . ' AND gj_date >= "' . $payload['from_date'] . '" AND gj_date <= "' . $payload['to_date'] . '"');
             while ($this->rows = $this->query->fetch_object()) {
                 $this->data[] = $this->rows;
             }
+            // echo json_encode(['success' => true, 'data' => $this->data], 200);
+            // return;
             return $this->data;
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);

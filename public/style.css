@@ -44,6 +44,43 @@ li {
     width: 45%;
 }
 
+.red_card {
+    background-color: red; 
+    color: #fff;
+    background-image: linear-gradient(to bottom right, red, rgb(219, 118, 78));
+}
+
+.green_card {
+    background-color: green; 
+    color: #fff;
+    background-image: linear-gradient(to bottom right, green, rgb(219, 118, 78));
+}
+
+.blue_card {
+    background-color: blue; 
+    color: #fff;
+    background-image: linear-gradient(to bottom right, blue, rgb(219, 150, 78));
+}
+
+.yellow_card {
+    background-color: yellow; 
+    color: #fff;
+    background-image: linear-gradient(to bottom right, yellow, rgb(219, 150, 78));
+}
+
+.card_hyper_link {
+    text-decoration: none;
+}
+
+ /* Stattistics */
+.monthly_statistics ~ div {
+    display: inline-block;
+ }
+
+ .monthly_statistics ~ div ~ h4{
+    display: inline-block;
+ }
+
 @media only screen and (max-width: 767px) {
     .dashboard_boxes {
         width: 100%;

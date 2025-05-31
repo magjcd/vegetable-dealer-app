@@ -16,3 +16,4 @@
 "INSERT INTO `accounts`(sub_header_name,header_id) VALUES('Revenue Earned',4);";
 "INSERT INTO `accounts`(sub_header_name,header_id) VALUES('Inventory Management',1);";
 "INSERT INTO `accounts`(sub_header_name,header_id) VALUES('Collection',1);";
+"INSERT INTO `accounts`(sub_header_name,header_id) VALUES('Banks',1);";

@@ -65,7 +65,8 @@ class GeneralController extends Model
         $this->query = null;
         $this->rows = null;
         $this->data = null;
-        $this->query = $this->model->rawCmd("SELECT * FROM sub_headers WHERE sub_header_name IN ('Accounts Receivable','Accounts Payable')");
+        // $this->query = $this->model->rawCmd("SELECT * FROM sub_headers WHERE sub_header_name IN ('Accounts Receivable','Accounts Payable')");
+        $this->query = $this->model->rawCmd("SELECT * FROM sub_headers WHERE sub_header_name IN ('Accounts Receivable','Accounts Payable','Banks')");
 
         while ($this->rows = $this->query->fetch_object()) {
             $this->data[] = $this->rows;

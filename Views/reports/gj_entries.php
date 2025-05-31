@@ -5,8 +5,6 @@ use Controllers\FinanacialController;
 include_once('../../autoload.php');
 $obj_financial = new FinanacialController;
 $list_collectoions = $obj_financial->listCollection($_POST['gj_date']);
-// echo '<pre>';
-// print_r($list_collectoions);
 ?>
 
 <table class="display" id="myTable">
