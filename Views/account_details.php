@@ -3,7 +3,8 @@
 $list_accs = $obj_account->listAccountsForGJ();
 ?>
 <div>
-    <h3 style="text-align: center;"> کھاتے کی تفصیل / اکائونٹ سمری</h3>
+    <!-- <h3 style="text-align: center;"> کھاتے کی تفصیل / اکائونٹ سمری</h3> -->
+    <h3 style="text-align: center;"> کھاتے کی تفصیل </h3>
 </div>
 
 

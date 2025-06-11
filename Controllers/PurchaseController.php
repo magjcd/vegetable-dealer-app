@@ -23,6 +23,11 @@ class PurchaseController extends Model
             $this->user_array = $_SESSION['munshi'];
             $this->user_id = $_SESSION['munshi']->id;
             $this->user_account_id = $_SESSION['munshi']->account_id;
+        } elseif (isset($_SESSION['accountant'])) {
+            $this->user_array = $_SESSION['accountant'];
+            $this->user_id = $_SESSION['accountant']->id;
+            $this->user_account_id = $_SESSION['accountant']->account_id;
+            $this->user_role = $_SESSION['accountant']->role;
         } elseif (isset($_SESSION['owner'])) {
             $this->user_array = $_SESSION['owner'];
             $this->user_id = $_SESSION['owner']->id;

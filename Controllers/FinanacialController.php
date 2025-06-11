@@ -26,6 +26,11 @@ class FinanacialController extends Model
             $this->user_id = $_SESSION['munshi']->id;
             $this->user_account_id = $_SESSION['munshi']->account_id;
             $this->user_role = $_SESSION['munshi']->role;
+        } elseif (isset($_SESSION['accountant'])) {
+            $this->user_array = $_SESSION['accountant'];
+            $this->user_id = $_SESSION['accountant']->id;
+            $this->user_account_id = $_SESSION['accountant']->account_id;
+            $this->user_role = $_SESSION['accountant']->role;
         } elseif (isset($_SESSION['owner'])) {
             $this->user_array = $_SESSION['owner'];
             $this->user_id = $_SESSION['owner']->id;
@@ -89,7 +94,7 @@ class FinanacialController extends Model
 
             $uniq_id = uniqid(); // it generates unique ID of current time in microseconds in order to control two entries in ledger table, it will assign two records that come in database simultaneously and easy to identify delete the relevat records
 
-            if ($this->user_role == 'admin') {
+            if ($this->user_role == 'accountant') {
                 if (!empty($payload['collector'])) { // for collection entry alognwith collector record entry
 
                     // Collector Information
@@ -110,6 +115,10 @@ class FinanacialController extends Model
                     $customer_sub_header_id = $customer_info_arr[2];
                     $customer_name = $customer_info_arr[3];
                     $customer_ct_name = $customer_info_arr[4];
+                    $customer_ct_id = $customer_info_arr[5];
+
+                    $customer_info = $this->model->rawCmd('SELECT `accounts`.`account_holder_name`, `cities`.`city_name` FROM `accounts` INNER JOIN `cities` ON `cities`.`id` = `accounts`.`city_id` WHERE `accounts`.`id` = ' . $customer_acc_id);
+                    $customer_info_obj = $customer_info->fetch_object();
 
                     // Collector payload 
                     if (!empty($payload['dr'])) { // for reverse entry as well
@@ -146,6 +155,7 @@ class FinanacialController extends Model
                     $customer_data1 = [
                         'gj_date' => $payload['trans_date'],
                         'customer_acc_id' => $customer_acc_id,
+                        'city_id' => $customer_ct_id,
                         'customer_header_id' => $customer_header_id,
                         'customer_sub_header_id' => $customer_sub_header_id,
                         'details' => $collector_name . ' - ' . $payload['details'],
@@ -165,11 +175,15 @@ class FinanacialController extends Model
                     $customer_acc_id = $customer_info_arr[0];
                     $customer_header_id = $customer_info_arr[1];
                     $customer_sub_header_id = $customer_info_arr[2];
+                    $customer_name = $customer_info_arr[3];
+                    $customer_ct_name = $customer_info_arr[4];
+                    $customer_ct_id = $customer_info_arr[5];
 
                     // Customer payload
                     $customer_data1 = [
                         'gj_date' => $payload['trans_date'],
                         'customer_acc_id' => $customer_acc_id,
+                        'city_id' => $customer_ct_id,
                         'customer_header_id' => $customer_header_id,
                         'customer_sub_header_id' => $customer_sub_header_id,
                         'details' => $payload['details'],
@@ -219,13 +233,21 @@ class FinanacialController extends Model
                 $collector_query = $this->model->fetchSingle('accounts', 'id=' . $collector_id);
                 $collector_object = $collector_query->fetch_object();
 
+                $customer_info = $this->model->rawCmd('SELECT `accounts`.`account_holder_name`, `cities`.`city_name` FROM `accounts` INNER JOIN `cities` ON `cities`.`id` = `accounts`.`city_id` WHERE `accounts`.`id` = ' . $customer_acc_id);
+                $customer_info_obj = $customer_info->fetch_object();
+
+                // echo json_encode(['success' => false, 'message' => $customer_info_obj], 302);
+                // // print_r($customer_info_obj);
+                // die();
+
                 // Collector Information
                 $data1 = [
                     'gj_date' => $payload['trans_date'],
                     'customer_acc_id' => $collector_object->id,
                     'customer_header_id' => $collector_object->header_id,
                     'customer_sub_header_id' => $collector_object->sub_header_id,
-                    'details' => $customer_acc_id . ' - ' . $payload['details'],
+                    // 'details' => $customer_acc_id . ' - ' . $payload['details'],
+                    'details' => $customer_info_obj->account_holder_name . ' ' . $customer_info_obj->city_name,
                     'cr' => $payload['dr'],
                     'doc_type' => 'gj',
                     'uniq_id' => $uniq_id,
@@ -259,7 +281,7 @@ class FinanacialController extends Model
             $this->data = null;
             $dt = (!empty($date) ? $date : date('Y-m-d'));
 
-            if ($this->user_role == 'admin') {
+            if ($this->user_role == 'accountant') {
                 // $this->query = $this->model->rawCmd('SELECT `ledger`.`id` as id, `ledger`.`details` as details, `ledger`.`dr` as dr, `ledger`.`cr` as cr, `ledger`.`reg_by` as reg_by, `accounts`.`account_holder_name` as account_holder_name, uniq_id as uniq_id, `users`.`name` as reg_name FROM `ledger` INNER JOIN `accounts` ON `ledger`.`customer_acc_id` = `accounts`.`id` INNER JOIN `users` ON `ledger`.`on_behalf_of` = `users`.`id` WHERE `ledger`.`gj_date` = "' . $dt . '" AND `ledger`.`customer_sub_header_id` != 5 AND doc_type= "gj"');
                 $this->query = $this->model->rawCmd('SELECT `ledger`.`id` as id, `ledger`.`details` as details, `ledger`.`dr` as dr, `ledger`.`cr` as cr, `ledger`.`reg_by` as reg_by, `accounts`.`account_holder_name` as account_holder_name, uniq_id as uniq_id, `users`.`name` as reg_name FROM `ledger` INNER JOIN `accounts` ON `ledger`.`customer_acc_id` = `accounts`.`id` INNER JOIN `users` ON `ledger`.`on_behalf_of` = `users`.`id` WHERE `ledger`.`gj_date` = "' . $dt . '" AND doc_type= "gj"');
             } else {
@@ -296,6 +318,74 @@ class FinanacialController extends Model
                 'cr' => $cr->cr,
             ];
             return $new_data;
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
+            die();
+        }
+    }
+
+    // City Wise Total of Collection for Collection / Ugrayee
+    public function cityWiseRemainingCollectionTotal($payload, $city_id)
+    {
+        try {
+            $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
+            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`cr`-`ledger`.`dr`) as city_total FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date <= "' . $dt . '" AND customer_sub_header_id = 1');
+            $tot_bal = $this->query->fetch_object();
+            return $tot_bal->city_total;
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
+            die();
+        }
+    }
+
+    // Ugrayee Amount / Previous Amount
+    // Yet to be implemented
+    public function cityWisePreviousCollectionTotal($payload, $city_id)
+    {
+        try {
+            $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
+            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`dr`-`ledger`.`cr`) as prev_city_total FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date < "' . $dt . '" AND customer_sub_header_id = 1');
+            $tot_bal = $this->query->fetch_object();
+            echo $tot_bal->prev_city_total;
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
+            die();
+        }
+    }
+
+    public function cityWiseDrCollectionTotal($payload, $city_id)
+    {
+        try {
+            $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
+            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`dr`) as dr FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date = "' . $dt . '" AND customer_sub_header_id = 1');
+            $tot_bal = $this->query->fetch_object();
+            echo $tot_bal->dr;
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
+            die();
+        }
+    }
+
+    public function cityWiseCrCollectionTotal($payload, $city_id)
+    {
+        try {
+            $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
+            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`cr`) as cr FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date = "' . $dt . '" AND customer_sub_header_id = 1');
+            $tot_bal = $this->query->fetch_object();
+            echo $tot_bal->cr;
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
+            die();
+        }
+    }
+
+    public function totalCollection($payload)
+    {
+        try {
+            $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
+            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`cr`-`ledger`.`dr`) as total_collection FROM `ledger` WHERE  gj_date <= "' . $dt . '" AND customer_sub_header_id = 1');
+            $tot_bal = $this->query->fetch_object();
+            echo $tot_bal->total_collection;
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
             die();
@@ -387,7 +477,7 @@ class FinanacialController extends Model
             $customer_info_arr = explode('|', $payload['account_info']);
             $customer_acc_id = $customer_info_arr[0];
 
-            $this->query = $this->model->rawCmd('SELECT `ledger`.`details`,`ledger`.`dr`,`ledger`.`cr` FROM `ledger` WHERE customer_acc_id = ' . $customer_acc_id . ' AND gj_date >= "' . $payload['from_date'] . '" AND gj_date <= "' . $payload['to_date'] . '"');
+            $this->query = $this->model->rawCmd('SELECT `ledger`.`gj_date`,`ledger`.`details`,`ledger`.`dr`,`ledger`.`cr` FROM `ledger` WHERE customer_acc_id = ' . $customer_acc_id . ' AND gj_date >= "' . $payload['from_date'] . '" AND gj_date <= "' . $payload['to_date'] . '"');
             while ($this->rows = $this->query->fetch_object()) {
                 $this->data[] = $this->rows;
             }

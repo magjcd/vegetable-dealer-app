@@ -5,6 +5,9 @@ if (isset($_SESSION['admin'])) {
 } elseif (isset($_SESSION['munshi'])) {
     $user_array = $_SESSION['munshi'];
     $user_info = $_SESSION['munshi']->name . ' (' . ucfirst($_SESSION['munshi']->role) . ')';
+} elseif (isset($_SESSION['accountant'])) {
+    $user_array = $_SESSION['accountant'];
+    $user_info = $_SESSION['accountant']->name . ' (' . ucfirst($_SESSION['accountant']->role) . ')';
 } elseif (isset($_SESSION['owner'])) {
     $user_array = $_SESSION['owner'];
     $user_info = $_SESSION['owner']->name . ' (' . ucfirst($_SESSION['owner']->role) . ')';
@@ -25,8 +28,8 @@ if (isset($_SESSION['admin'])) {
     </div>
 
     <div>
-        <a href="">
-            <i class="fa fa-shopping-cart"></i>
+        <a href="index.php?route=account_details">
+            <i class="fa fa-file"></i>
         </a>
     </div>
 

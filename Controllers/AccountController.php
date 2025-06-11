@@ -15,6 +15,7 @@ class AccountController extends Model
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+
         if (isset($_SESSION['admin'])) {
             $this->user_array = $_SESSION['admin'];
             $this->user_id = $_SESSION['admin']->id;
@@ -25,6 +26,11 @@ class AccountController extends Model
             $this->user_id = $_SESSION['munshi']->id;
             $this->user_account_id = $_SESSION['munshi']->account_id;
             $this->user_role = $_SESSION['munshi']->role;
+        } elseif (isset($_SESSION['accountant'])) {
+            $this->user_array = $_SESSION['accountant'];
+            $this->user_id = $_SESSION['accountant']->id;
+            $this->user_account_id = $_SESSION['accountant']->account_id;
+            $this->user_role = $_SESSION['accountant']->role;
         } elseif (isset($_SESSION['owner'])) {
             $this->user_array = $_SESSION['owner'];
             $this->user_id = $_SESSION['owner']->id;
@@ -128,10 +134,10 @@ class AccountController extends Model
             $this->rows = null;
             $this->data = null;
 
-            if ($this->user_role == 'admin') {
-                $this->query = $this->model->rawCmd('SELECT `accounts`.`id` as id,`accounts`.`account_holder_name` as acc_name, `accounts`.`header_id` as hid, `accounts`.`sub_header_id` as subid, `cities`.`city_name` as ct_name FROM `accounts` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id`');
+            if ($this->user_role == 'accountant') {
+                $this->query = $this->model->rawCmd('SELECT `accounts`.`id` as id,`accounts`.`account_holder_name` as acc_name, `accounts`.`header_id` as hid, `accounts`.`sub_header_id` as subid, `cities`.`id` as ct_id, `cities`.`city_name` as ct_name FROM `accounts` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id`');
             } else {
-                $this->query = $this->model->rawCmd('SELECT `accounts`.`id` as id,`accounts`.`account_holder_name` as acc_name, `accounts`.`header_id` as hid, `accounts`.`sub_header_id` as subid, `cities`.`city_name` as ct_name FROM `accounts` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id` WHERE `accounts`.`sub_header_id` = 1');
+                $this->query = $this->model->rawCmd('SELECT `accounts`.`id` as id,`accounts`.`account_holder_name` as acc_name, `accounts`.`header_id` as hid, `accounts`.`sub_header_id` as subid, `cities`.`id` as ct_id, `cities`.`city_name` as ct_name FROM `accounts` INNER JOIN `cities` ON `accounts`.`city_id` = `cities`.`id` WHERE `accounts`.`sub_header_id` = 1');
             }
             if ($this->query->num_rows > 0) {
                 while ($this->rows = $this->query->fetch_object()) {

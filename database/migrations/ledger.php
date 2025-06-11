@@ -19,6 +19,7 @@ class ledger extends database
 
                             details TEXT,
                             customer_acc_id int NOT NULL,
+                            city_id int NULL,
                             customer_header_id int NOT NULL,
                             customer_sub_header_id int NOT NULL,
                             dr int DEFAULT (0),
@@ -34,10 +35,11 @@ class ledger extends database
                             
                             -- CONSTRAINT fk_inv_no_ledger FOREIGN KEY (inv_no) REFERENCES sell_inv_no(id) ON DELETE CASCADE, 
                             CONSTRAINT fk_customer_acc_id_ledger FOREIGN KEY (customer_acc_id) REFERENCES accounts(id) ON DELETE CASCADE ON UPDATE CASCADE, 
+                            CONSTRAINT fk_city_id_ledger FOREIGN KEY (city_id) REFERENCES cities(id) ON DELETE CASCADE ON UPDATE CASCADE,
                             CONSTRAINT fk_customer_header_id_ledger FOREIGN KEY (customer_header_id) REFERENCES headers(id) ON DELETE CASCADE ON UPDATE CASCADE, 
                             CONSTRAINT fk_customer_sub_header_id_ledger FOREIGN KEY (customer_sub_header_id) REFERENCES sub_headers(id) ON DELETE CASCADE ON UPDATE CASCADE,
                             CONSTRAINT fk_reg_by_ledger FOREIGN KEY (reg_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-                            CONSTRAINT fk_on_behalf_of_ledger FOREIGN KEY (on_behalf_of) REFERENCES ledger(id)
+                            CONSTRAINT fk_on_behalf_of_ledger FOREIGN KEY (on_behalf_of) REFERENCES users(id)
 
                         ) ENGINE=INNODB AUTo_INCREMENT=1 DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_general_ci;");
     }
@@ -45,3 +47,6 @@ class ledger extends database
 new ledger;
 
                             // ALTER TABLE `ledger` ADD COLUMN on_behalf_of int; ALTER TABLE `ledger` ADD CONSTRAINT FOREIGN KEY (on_behalf_of) REFERENCES users(id)
+
+                            // ALTER TABLE `ledger` ADD COLUMN city_id int AFTER customer_acc_id;
+                            // ALTER TABLE `ledger` ADD CONSTRAINT fk_city_id_ledger FOREIGN KEY (city_id) REFERENCES cities(id) ON DELETE CASCADE ON UPDATE CASCADE;

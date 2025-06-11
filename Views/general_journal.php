@@ -90,7 +90,7 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
                 <?php
                 foreach ($list_accs as $list_acc) {
                 ?>
-                    <option value="<?php echo $list_acc->id . '|' . $list_acc->hid . '|' . $list_acc->subid . '|' . $list_acc->acc_name . '|' . $list_acc->ct_name; ?>"><?php echo $list_acc->acc_name . ' ' . $list_acc->ct_name; ?></option>
+                    <option value="<?php echo $list_acc->id . '|' . $list_acc->hid . '|' . $list_acc->subid . '|' . $list_acc->acc_name . '|' . $list_acc->ct_name . '|' . $list_acc->ct_id; ?>"><?php echo $list_acc->acc_name . ' ' . $list_acc->ct_name; ?></option>
                 <?php
                 }
                 ?>
@@ -99,9 +99,9 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
         </div>
 
         <?php
-        // if ($obj_account->user_array->role != 'munshi') {
+        // if ($obj_account->user_array->role == 'accountant') {
         ?>
-        <div class="form-group" style="text-align: right;">
+        <div class="form-group" <?php echo $obj_account->user_array->role == 'accountant' ? 'style="text-align: right; display: block;"' : 'style="text-align: right; display: none;"'; ?>>
             <label for="collector">
                 <h5>وصول کنندہ</h5>
             </label>
@@ -208,10 +208,10 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
 
                     let response = JSON.parse(data);
                     if (response.success == false) {
-                        response.errors.account_info ? $('#error_account_info').html(response.errors.account_info) : '';
-                        response.errors.collector ? $('#error_collector').html(response.errors.collector) : '';
-                        response.errors.details ? $('#error_details').html(response.errors.details) : '';
-                        response.errors.dr ? $('#error_dr').html(response.errors.dr) : '';
+                        response?.errors?.account_info ? $('#error_account_info').html(response?.errors?.account_info) : '';
+                        response?.errors?.collector ? $('#error_collector').html(response?.errors?.collector) : '';
+                        response?.errors?.details ? $('#error_details').html(response?.errors?.details) : '';
+                        response?.errors?.dr ? $('#error_dr').html(response?.errors?.dr) : '';
                         $('#add_gj_entry').html('Add');
                         return;
                     }
@@ -323,29 +323,32 @@ $list_collector_accs = $obj_account->listUserAccountsForGJ();
         });
 
         $(document).on('click', '.delete_sng_collection_record', function(e) {
-            alert($(this).data('id'));
+            // alert($(this).data('id'));
             e.preventDefault();
-            let payload = {
-                flag: 'delete_collection_record',
-                uniq_id: $(this).data('id')
-            }
 
-            $.ajax({
-                url: 'Views/actions/finance_actions.php',
-                type: 'POST',
-                data: payload,
-
-                success: function(data) {
-                    console.log(data);
-                    $('.text-success').html(data)
-                    // gj_entries();
-                },
-
-                error: function(request, status, error) {
-                    console.log(request.responseText);
-
+            if (confirm('کیا آپ یے انٹری ڈیلیٹ کرنا چاہتے ہیں؟')) {
+                let payload = {
+                    flag: 'delete_collection_record',
+                    uniq_id: $(this).data('id')
                 }
-            })
+
+                $.ajax({
+                    url: 'Views/actions/finance_actions.php',
+                    type: 'POST',
+                    data: payload,
+
+                    success: function(data) {
+                        console.log(data);
+                        $('.text-success').html(data)
+                        // gj_entries();
+                    },
+
+                    error: function(request, status, error) {
+                        console.log(request.responseText);
+
+                    }
+                })
+            }
         });
 
         // jQuery Data Table

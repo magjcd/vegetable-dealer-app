@@ -215,7 +215,7 @@ if (isset($_POST['sell_inv_no'])) {
                     }
                     kachi_book_report_unsaved(); // Calling Kachi listing Report on addition of a single item
                     $('#vendor').focus();
-                    $('#sell_stock').html('Add');
+                    $('#sell_stock').html('Add Item');
                     $('.text-success').html(response.message).show();
                     $('#qty').val(0)
                     $('#price').val(0)
@@ -294,7 +294,7 @@ if (isset($_POST['sell_inv_no'])) {
             }
 
             $.ajax({
-                url: 'Views/reports/kachi_book_report.php',
+                url: 'Views/reports/kachi_day_invoices.php',
                 type: 'POST',
                 data: payload,
 
@@ -404,6 +404,54 @@ if (isset($_POST['sell_inv_no'])) {
         }
 
         it_delete();
+
+        $(document).on('click', '.delete-invoice', function(e) {
+            e.preventDefault();
+
+            // Swal.fire({
+            //     title: "کیا آپ اس بل کو ڈیلیٹ کرنا چاہتے ہیں۔",
+            //     text: "آئٹم ایڈ کریں، خالی بل سیو نہیں ہوگا۔",
+            //     icon: "info",
+            //     showDenyButton: true,
+            //     showCancelButton: true,
+            //     confirmButtonText: 'Yes',
+            //     denyButtonText: 'No',
+            // customClass: {
+            //     actions: 'my-actions',
+            //     cancelButton: 'order-1 right-gap',
+            //     confirmButton: 'order-2',
+            //     denyButton: 'order-3',
+            // }
+            // });
+
+            // alert($(this).data('id'));
+            if (confirm("کیا آپ اس بل کو ڈیلیٹ کرنا چاہتے ہیں۔")) {
+                const inv_no = $(this).data('id');
+
+                let payload = {
+                    'flag': 'delete_invoice',
+                    inv_no: inv_no
+                }
+
+                $.ajax({
+                    url: 'Views/actions.php',
+                    type: 'POST',
+                    data: payload,
+
+                    success: function(data) {
+                        $('.text-success').html(data.message).show();
+                        kachi_book_report();
+                        console.log(data);
+                    },
+
+                    error: function(request, status, error) {
+                        console.log(request.responseText);
+
+                    }
+                })
+            }
+        });
+
 
         // jQuery Data Table
         $('#myTable').DataTable();

@@ -42,7 +42,7 @@
                     $customer_mandi_book_total = $obj_sell->SngCustomerMandiBookTotal($list_acc['id'], $_POST['mandi_book_date'])
                 ?>
                     <div class="card-outer-body">
-                        <div class="card" style="">
+                        <div class="card">
 
                             <div class="card-body text-right" style="background-color: #f2f2f2;">
                                 <h4 class="card-title"><?php echo $list_acc['account_holder_name']; ?></h4>
@@ -52,7 +52,7 @@
                                     <p class="card-text"><?php echo ($mandi_book->sl_qty * $mandi_book->price) . ' = ' . $mandi_book->price .  ' x ' . $mandi_book->item_name . ' ' . $mandi_book->sl_qty; ?></p>
                                 <?php } ?>
                                 <p><?php echo $customer_mandi_book_total->customer_mandi_total; ?></p>
-                                <a href="#" class="btn btn-primary stretched-link">Goto Account</a>
+                                <a href="index?route=account_details" class="btn btn-primary stretched-link">Goto Account</a>
                             </div>
                         </div>
                     </div>

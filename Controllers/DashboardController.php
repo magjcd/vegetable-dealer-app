@@ -27,6 +27,11 @@ class DashboardController extends Model
             $this->user_id = $_SESSION['munshi']->id;
             $this->user_account_id = $_SESSION['munshi']->account_id;
             $this->user_role = $_SESSION['munshi']->role;
+        } elseif (isset($_SESSION['accountant'])) {
+            $this->user_array = $_SESSION['accountant'];
+            $this->user_id = $_SESSION['accountant']->id;
+            $this->user_account_id = $_SESSION['accountant']->account_id;
+            $this->user_role = $_SESSION['accountant']->role;
         } elseif (isset($_SESSION['owner'])) {
             $this->user_array = $_SESSION['owner'];
             $this->user_id = $_SESSION['owner']->id;
@@ -57,7 +62,7 @@ class DashboardController extends Model
     public function monthlySell($payload)
     {
         try {
-            $dt = (!empty($payload['date']) ? $payload['date'] : date('Y-m-d'));
+            $dt = (!empty($payload['date']) ? $payload['date'] : date('Y-m-t'));
             $m = date('Y-m-01');
             if ($this->user_role == 'owner') {
                 // echo 'SELECT SUM(sl_qty*price) as monthly_sell FROM `purinvretstk` WHERE trans_date >= "' . $m . '" AND trans_date <= "' . $dt . '"';
@@ -97,7 +102,7 @@ class DashboardController extends Model
     public function monthlyCollection($payload)
     {
         try {
-            $td = (!empty($payload['date']) ? $payload['date'] : date('Y-m-d'));
+            $td = (!empty($payload['date']) ? $payload['date'] : date('Y-m-t'));
             $fm = date('Y-m-01');
             if ($this->user_role == 'owner') {
                 $this->query = $this->model->rawCmd('SELECT SUM(cr) as monthly_collection FROM `ledger` WHERE gj_date >= "' . $fm . '" AND gj_date <= "' . $td . '" AND customer_sub_header_id = 5 AND doc_type = "gj"');
@@ -162,7 +167,7 @@ class DashboardController extends Model
             $months_array = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
 
             foreach ($months_array as $month_array) {
-                $this->query = $this->model->rawCmd('SELECT sum(cr) as month_coll FROM ledger WHERE customer_sub_header_id = 5 AND gj_date >= "' . date('Y-' . $month_array . '-01') . '" AND gj_date <= "' . date('Y-' . $month_array . '-d') . '"');
+                $this->query = $this->model->rawCmd('SELECT sum(cr) as month_coll FROM ledger WHERE customer_sub_header_id = 5 AND gj_date >= "' . date('Y-' . $month_array . '-01') . '" AND gj_date <= "' . date('Y-' . $month_array . '-t') . '"');
                 array_push($this->data, $this->query->fetch_object()->month_coll);
             }
 
@@ -182,7 +187,7 @@ class DashboardController extends Model
             $months_array = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
 
             foreach ($months_array as $month_array) {
-                $this->query = $this->model->rawCmd('SELECT sum(sl_qty*price) as month_sell FROM `purinvretstk` WHERE trans_date >= "' . date('Y-' . $month_array . '-01') . '" AND trans_date <= "' . date('Y-' . $month_array . '-d') . '" AND doc_type = "sell"');
+                $this->query = $this->model->rawCmd('SELECT sum(sl_qty*price) as month_sell FROM `purinvretstk` WHERE trans_date >= "' . date('Y-' . $month_array . '-01') . '" AND trans_date <= "' . date('Y-' . $month_array . '-t') . '" AND doc_type = "sell"');
                 array_push($this->data, $this->query->fetch_object()->month_sell);
             }
 

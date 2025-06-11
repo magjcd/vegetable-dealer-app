@@ -66,7 +66,11 @@ if ($_POST['flag'] == 'login') {
     $obj_sell->saveKachiInvoce($_POST);
 } elseif ($_POST['flag'] == 'delete_unsaved_sng_item') {
     $obj_sell->deleteUnsavedSngItem($_POST);
+} elseif ($_POST['flag'] == 'delete_invoice') {
+    $obj_sell->deleteSellInvoice($_POST);
 }
+
+
 
 
 // } catch (\Throwable $th) {
