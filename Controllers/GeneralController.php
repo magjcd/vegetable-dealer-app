@@ -48,16 +48,13 @@ class GeneralController extends Model
         return $this->data;
     }
 
-    public function listHeaders() {}
-
-    public function listSubHeaders() {}
-
-    public function listHeadersForAccounts()
+    public function listHeaders()
     {
         $this->query = null;
         $this->rows = null;
         $this->data = null;
-        $this->query = $this->model->rawCmd("SELECT * FROM headers WHERE header_name IN ('Assets','Liabilities')");
+        // $this->query = $this->model->rawCmd("SELECT * FROM headers WHERE header_name IN ('Assets','Liabilities')");
+        $this->query = $this->model->fetchAll("headers");
 
         while ($this->rows = $this->query->fetch_object()) {
             $this->data[] = $this->rows;
@@ -65,13 +62,14 @@ class GeneralController extends Model
         return $this->data;
     }
 
-    public function listSubHeadersForAccounts()
+    public function listSubHeaders($header_id)
     {
         $this->query = null;
         $this->rows = null;
         $this->data = null;
         // $this->query = $this->model->rawCmd("SELECT * FROM sub_headers WHERE sub_header_name IN ('Accounts Receivable','Accounts Payable')");
-        $this->query = $this->model->rawCmd("SELECT * FROM sub_headers WHERE sub_header_name IN ('Accounts Receivable','Accounts Payable','Banks')");
+        // $this->query = $this->model->rawCmd("SELECT * FROM sub_headers WHERE sub_header_name IN ('Accounts Receivable','Accounts Payable','Banks')");
+        $this->query = $this->model->fetchSingle("sub_headers", "header_id = " . $header_id);
 
         while ($this->rows = $this->query->fetch_object()) {
             $this->data[] = $this->rows;

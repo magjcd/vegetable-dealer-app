@@ -2,6 +2,9 @@
 <?php
 $list_accs = $obj_account->listAccountsForGJ();
 $list_collector_accs = $obj_account->listUserAccountsForGJ();
+
+// echo '<pre>';
+// print_r($list_accs);
 ?>
 <div>
     <?php if ($obj_account->user_array->role == 'munshi') { ?>

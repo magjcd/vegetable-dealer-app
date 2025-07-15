@@ -1,0 +1,2 @@
+QUERY FOR VENDOR INVOICE
+SELECT SUM(vend_sell_qty*price) as gr_amt, SUM((vend_sell_qty*price) * 6 / 100) as cm_amt FROM `purinvretstk` WHERE builty_no = 'GH657' AND vehicle_no = 'AER-556' AND doc_type = 'purchase_vendor' AND invoiced = '0';

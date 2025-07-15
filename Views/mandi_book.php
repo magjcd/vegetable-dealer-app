@@ -52,7 +52,7 @@
                                     <p class="card-text"><?php echo ($mandi_book->sl_qty * $mandi_book->price) . ' = ' . $mandi_book->price .  ' x ' . $mandi_book->item_name . ' ' . $mandi_book->sl_qty; ?></p>
                                 <?php } ?>
                                 <p><?php echo $customer_mandi_book_total->customer_mandi_total; ?></p>
-                                <a href="index?route=account_details" class="btn btn-primary stretched-link">Goto Account</a>
+                                <a href="index?route=account_details&cid=<?php echo $list_acc['id']; ?>" class="btn btn-primary stretched-link">Goto Account</a>
                             </div>
                         </div>
                     </div>

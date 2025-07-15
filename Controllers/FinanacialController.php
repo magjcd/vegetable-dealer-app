@@ -213,11 +213,14 @@ class FinanacialController extends Model
                 $customer_acc_id = $customer_info_arr[0];
                 $header_id = $customer_info_arr[1];
                 $sub_header_id = $customer_info_arr[2];
-
+                $customer_name = $customer_info_arr[3];
+                $customer_ct_name = $customer_info_arr[4];
+                $customer_ct_id = $customer_info_arr[5];
                 // Customer Payload
                 $data = [
                     'gj_date' => $payload['trans_date'],
                     'customer_acc_id' => $customer_acc_id,
+                    'city_id' => $customer_ct_id,
                     'customer_header_id' => $header_id,
                     'customer_sub_header_id' => $sub_header_id,
                     'details' => $collector_name . ' ' . $payload['details'],
@@ -329,7 +332,7 @@ class FinanacialController extends Model
     {
         try {
             $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
-            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`cr`-`ledger`.`dr`) as city_total FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date <= "' . $dt . '" AND customer_sub_header_id = 1');
+            $this->query = $this->model->rawCmd('SELECT SUM(`ledger`.`cr`-`ledger`.`dr`) as city_total FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date <= "' . $dt . '" AND customer_sub_header_id = 1');
             $tot_bal = $this->query->fetch_object();
             return $tot_bal->city_total;
         } catch (\Exception $e) {
@@ -344,9 +347,9 @@ class FinanacialController extends Model
     {
         try {
             $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
-            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`dr`-`ledger`.`cr`) as prev_city_total FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date < "' . $dt . '" AND customer_sub_header_id = 1');
+            $this->query = $this->model->rawCmd('SELECT SUM(`ledger`.`cr`-`ledger`.`dr`) as prev_city_total FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date < "' . $dt . '" AND customer_sub_header_id = 1');
             $tot_bal = $this->query->fetch_object();
-            echo $tot_bal->prev_city_total;
+            return $tot_bal->prev_city_total;
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
             die();
@@ -357,9 +360,9 @@ class FinanacialController extends Model
     {
         try {
             $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
-            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`dr`) as dr FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date = "' . $dt . '" AND customer_sub_header_id = 1');
+            $this->query = $this->model->rawCmd('SELECT SUM(`ledger`.`dr`) as dr FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date = "' . $dt . '" AND customer_sub_header_id = 1');
             $tot_bal = $this->query->fetch_object();
-            echo $tot_bal->dr;
+            return $tot_bal->dr;
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
             die();
@@ -370,9 +373,9 @@ class FinanacialController extends Model
     {
         try {
             $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
-            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`cr`) as cr FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date = "' . $dt . '" AND customer_sub_header_id = 1');
+            $this->query = $this->model->rawCmd('SELECT SUM(`ledger`.`cr`) as cr FROM `ledger` WHERE city_id = ' . $city_id . ' AND gj_date = "' . $dt . '" AND customer_sub_header_id = 1');
             $tot_bal = $this->query->fetch_object();
-            echo $tot_bal->cr;
+            return $tot_bal->cr;
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
             die();
@@ -383,9 +386,9 @@ class FinanacialController extends Model
     {
         try {
             $dt = (!empty($payload['collection_date']) ? $payload['collection_date'] : date('Y-m-d'));
-            $this->query = $this->model->rawCmd('SELECT sum(`ledger`.`cr`-`ledger`.`dr`) as total_collection FROM `ledger` WHERE  gj_date <= "' . $dt . '" AND customer_sub_header_id = 1');
+            $this->query = $this->model->rawCmd('SELECT SUM(`ledger`.`cr`-`ledger`.`dr`) as total_collection FROM `ledger` WHERE  gj_date <= "' . $dt . '" AND customer_sub_header_id = 1');
             $tot_bal = $this->query->fetch_object();
-            echo $tot_bal->total_collection;
+            return $tot_bal->total_collection;
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()], 500);
             die();

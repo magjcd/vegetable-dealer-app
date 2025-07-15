@@ -2,8 +2,7 @@
     ini_set('display_error', 1);
     $cities = $obj_general->listAllCities();
     $list_customers = $obj_account->listAccounts();
-    $list_sub_headers = $obj_general->listSubHeadersForAccounts();
-    $list_headers = $obj_general->listHeadersForAccounts();
+    $list_headers = $obj_general->listHeaders();
     ?>
     <u>
         <h3 style="text-align: center;">کھاتوں کی تفصیل</h3>
@@ -36,7 +35,8 @@
 
                             <div class="form-group" style="text-align: right;">
                                 <label for="account_holder_name">
-                                    <h5>گاہک کا نام</h5>
+                                    <!-- <h5>گاہک کا نام</h5> -->
+                                    <h5>نام</h5>
                                 </label>
                                 <input type="text" class="form-control" id="account_holder_name" placeholder="گاہک کا نام" name="account_holder_name" dir="rtl">
                                 <span class="text-danger" id="error_account_holder_name"></span>
@@ -61,15 +61,6 @@
                             <div class="form-group">
                                 <label for="sub_header">Sub_Header:</label>
                                 <select id="sub_header" name="sub_header" class="form-control">
-                                    <option value="">Select a Sub Header</option>
-                                    <option value="" disabled>--------------------------------</option>
-                                    <?php
-                                    foreach ($list_sub_headers as $list_sub_header) {
-                                    ?>
-                                        <option value="<?php echo $list_sub_header->id; ?>"><?php echo $list_sub_header->sub_header_name; ?></option>
-                                    <?php
-                                    }
-                                    ?>
                                 </select>
                                 <span class="text-danger" id="error_sub_header"></span>
                             </div>
@@ -190,6 +181,35 @@
     </div>
     <script>
         $(document).ready(function() {
+
+            $('#header').on('change', function() {
+                const header_info = $(this).val();
+                let payload = {
+                    flag: 'list_sub_headers',
+                    header_id: header_info,
+                }
+
+                $.ajax({
+                    url: 'Views/actions/general_actions.php',
+                    type: 'POST',
+                    data: payload,
+
+                    beforeSend: function() {
+                        $('.btn-primary').html('wait....');
+                        console.log(`I am before send.....`);
+                    },
+
+                    success: function(data) {
+                        $('#sub_header').html(data);
+                    },
+                    error: function(request, status, error) {
+                        console.log(request.responseText);
+
+                    }
+                })
+            });
+
+
             $('#add_customer').on('click', function(e) {
                 e.preventDefault();
 

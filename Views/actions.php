@@ -68,11 +68,8 @@ if ($_POST['flag'] == 'login') {
     $obj_sell->deleteUnsavedSngItem($_POST);
 } elseif ($_POST['flag'] == 'delete_invoice') {
     $obj_sell->deleteSellInvoice($_POST);
+} elseif ($_POST['flag'] == 'vendor_bill') {
+    $obj_purchase->purchaseVendorItem($_POST);
+} elseif ($_POST['flag'] == 'save_vendor_inv') {
+    $obj_purchase->saveVendorInvoice($_POST);
 }
-
-
-
-
-// } catch (\Throwable $th) {
-//     return $th->getMessage();
-// }

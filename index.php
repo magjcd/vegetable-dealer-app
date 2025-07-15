@@ -3,7 +3,7 @@
 
 <head>
     <!-- <title> محمد علی، فرحان علی قادری اینڈ برادرز - سبزی مندی</title> -->
-    <title> محمد علی اینڈ برادرز - سبزی منڈی</title>
+    <title> محمد علی اینڈ سنز - سبزی منڈی</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -73,8 +73,12 @@
     if (count($_SESSION) == 0) {
         header('location: login');
     }
+
+
     include_once('./Views/layout/top_navigation.php');
     echo '<div style="margin-top: 100px;"></div>';
+    // echo '<pre>';
+    // print_r($_SESSION['accountant']->role);
     if (isset($_GET['route'])) {
         $route = $_GET['route'];
         $path = 'Views/' . $route . '.php';

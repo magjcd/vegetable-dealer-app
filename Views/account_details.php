@@ -7,7 +7,9 @@ $list_accs = $obj_account->listAccountsForGJ();
     <h3 style="text-align: center;"> کھاتے کی تفصیل </h3>
 </div>
 
-
+<?php
+$cid = $_GET['cid'] ?? $_GET['cid'];
+?>
 <div class="container">
 
     <!-- The Modal -->
@@ -86,7 +88,9 @@ $list_accs = $obj_account->listAccountsForGJ();
                 <?php
                 foreach ($list_accs as $list_acc) {
                 ?>
-                    <option value="<?php echo $list_acc->id . '|' . $list_acc->acc_name . '|' . $list_acc->ct_name; ?>"><?php echo $list_acc->acc_name . ' ' . $list_acc->ct_name; ?></option>
+                    <option <?php if ($list_acc->id == $cid) {
+                                echo "selected='selected'";
+                            } ?> value="<?php echo $list_acc->id . '|' . $list_acc->acc_name . '|' . $list_acc->ct_name; ?>"><?php echo $list_acc->acc_name . ' ' . $list_acc->ct_name; ?></option>
                 <?php
                 }
                 ?>

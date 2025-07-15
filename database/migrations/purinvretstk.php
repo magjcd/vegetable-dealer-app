@@ -18,8 +18,9 @@
     pur_ret_qty int,
     sl_qty int,
     sl_ret_qty int,
+    vend_sell_qty int,
     price int, 
-    doc_type ENUM('sell','sell_ret','purchase','purchase_ret'),
+    doc_type ENUM('sell','sell_ret','purchase','purchase_ret','purchase_vendor','purchase_vendor_ret'),
     reg_by int,
     invoiced ENUM('0','1') DEFAULT '0',
 

@@ -20,19 +20,19 @@ foreach ($list_cities as $list_city) {
     $prev_city_wise_dr_total = $obj_financial->cityWiseDrCollectionTotal($payload, $list_city->id);
     $prev_city_wise_cr_total = $obj_financial->cityWiseCrCollectionTotal($payload, $list_city->id);
 ?>
-    <table class="" id="" style="border: 1px solid #000; width:100%;height:auto;">
+    <table class="" id="" style="border: 1px dotted #000; width:100%;height:auto;">
         <thead>
             <tr>
                 <th colspan="5" style="text-align: center; background-color: #066666; color: #fff;">
                     <h3><?php echo $list_city->city_name; ?></h3>
                 </th>
             </tr>
-            <tr style="border: 1px solid #000; width:100%;height:auto; color: #fff; background-color:#000;">
-                <th style="border: 1px solid #000;text-align: center; width:100px;">بقیہ رقم</th>
-                <th style="border: 1px solid #000;text-align: center; width:100px;">وصولی</th>
-                <th style="border: 1px solid #000;text-align: center; width:100px;">مال</th>
-                <th style="border: 1px solid #000;text-align: center; width:100px;">اگرائی</th>
-                <th style="border: 1px solid #000;text-align: center; width:300px;">نام</th>
+            <tr style="border: 1px dotted #000; width:100%;height:auto; color: #fff; background-color:#000;">
+                <th style="border: 1px dotted #000;text-align: center; width:100px;">بقیہ رقم</th>
+                <th style="border: 1px dotted #000;text-align: center; width:100px;">وصولی</th>
+                <th style="border: 1px dotted #000;text-align: center; width:100px;">مال</th>
+                <th style="border: 1px dotted #000;text-align: center; width:100px;">اگرائی</th>
+                <th style="border: 1px dotted #000;text-align: center; width:300px;">نام</th>
             </tr>
         </thead>
 
@@ -45,14 +45,12 @@ foreach ($list_cities as $list_city) {
                     $customer_balances = $obj_financial->listFullCollection($_POST, $customer_id);
                     if (!empty($customer_balances['dr']) || !empty($customer_balances['cr']) || !empty($customer_balances['prev_bal'])) {
             ?>
-                        <tr style="border: 1px solid #000; width:100%;height:auto;">
-                            <td style="border: 1px solid #000; text-align: right;"><?php echo (($customer_balances['prev_bal'] + $customer_balances['cr']) - $customer_balances['dr']); ?></td>
-                            <td style="border: 1px solid #000; text-align: right;"><?php echo $customer_balances['dr']; ?></td>
-                            <td style="border: 1px solid #000; text-align: right;"><?php echo $customer_balances['cr']; ?></td>
-                            <td style="border: 1px solid #000; text-align: right;"><?php echo $customer_balances['prev_bal']; ?></td>
-                            <a href="index?route=account_details">
-                                <td style="border: 1px solid #000; text-align: right;"><?php echo $customer_balances['account_holder_name']; ?></td>
-                            </a>
+                        <tr style="border: 1px dotted #000; width:100%;height:auto;">
+                            <td style="border: 1px dotted #000; text-align: right;"><?php echo (($customer_balances['prev_bal'] + $customer_balances['cr']) - $customer_balances['dr']); ?></td>
+                            <td style="border: 1px dotted #000; text-align: right;"><?php echo $customer_balances['dr']; ?></td>
+                            <td style="border: 1px dotted #000; text-align: right;"><?php echo $customer_balances['cr']; ?></td>
+                            <td style="border: 1px dotted #000; text-align: right;"><?php echo $customer_balances['prev_bal']; ?></td>
+                            <td style="border: 1px dotted #000; text-align: right;"><a href="index?route=account_details&cid=<?php echo $customer_id; ?>" style="color: #000;"><?php echo $customer_balances['account_holder_name']; ?></a></td>
                         </tr>
                     <?php
                     }
