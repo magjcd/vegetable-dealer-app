@@ -44,7 +44,6 @@
 
         // $error_email = in_array('email', $response) ? $response['email'] : '';
         // $error_password = in_array('password', $response) ? $response['password'] : '';
-        //
     }
 
     ?>
