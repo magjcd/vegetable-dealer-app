@@ -15,36 +15,37 @@
 
 <body>
     <?php
-    // ini_set('display_error', 1);
-    // include_once('autoload.php');
-    // session_start();
+    ini_set('display_error', 1);
+    include_once('autoload.php');
+    session_start();
 
-    // use Controllers\AuthController;
+    use Controllers\AuthController;
 
-    // $auth_obj = new AuthController;
+    $auth_obj = new AuthController;
 
-    // if (count($_SESSION) > 0) {
-    //     header('location: index');
-    // }
+    if (count($_SESSION) > 0) {
+        header('location: index');
+    }
 
-    // if (isset($_POST['login'])) {
+    if (isset($_POST['login'])) {
 
-    //     $response = $auth_obj->login($_POST);
-    //     // echo '<pre>';
-    //     // print_r($response);
-    //     // echo '</pre>';
+        $response = $auth_obj->login($_POST);
+        // echo '<pre>';
+        // print_r($response);
+        // echo '</pre>';
 
-    //     $error_email = isset($response['email']) ? $response['email'] : '';
-    //     $error_password = isset($response['password']) ? $response['password'] : '';
-    //     $error_logged = isset($response['logged']) ? $response['logged'] : '';
+        $error_email = isset($response['email']) ? $response['email'] : '';
+        $error_password = isset($response['password']) ? $response['password'] : '';
+        $error_logged = isset($response['logged']) ? $response['logged'] : '';
 
-    //     // if (in_array('email', $response)) {
-    //     //     echo 'email';
-    //     // }
+        // if (in_array('email', $response)) {
+        //     echo 'email';
+        // }
 
-    //     // $error_email = in_array('email', $response) ? $response['email'] : '';
-    //     // $error_password = in_array('password', $response) ? $response['password'] : '';
-    // }
+        // $error_email = in_array('email', $response) ? $response['email'] : '';
+        // $error_password = in_array('password', $response) ? $response['password'] : '';
+        //
+    }
 
     ?>
 
